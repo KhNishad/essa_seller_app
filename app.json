@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "essa_seller_app",
+    "name": "Essa Seller",
     "slug": "essa_seller_app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.abdussattar.essa_seller_app"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
-import { Ionicons,FontAwesome} from '@expo/vector-icons';
-import { useState,useEffect} from 'react';
+import { Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
 import { useIsFocused } from "@react-navigation/native";
 
 
@@ -11,70 +11,96 @@ import { Alert } from 'react-native';
 // navigations 
 import Dashboard from '../screens/DashboardScreen';
 import ProductScreen from '../screens/ProductListScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+import OrderList from '../screens/OrderList';
 
 
 
-export  function TabNav() {
+export function TabNav() {
 
 
-  // const netFunction = ()=>{
-  //   NetworkUtils.isNetworkAvailable().then(res=>{
-  //     if(!res){
-  //       Alert.alert(
-  //         "Something Went Wrong!",
-  //         "Please Check Your Internet Connection",
-  //         [
-  //           {
-  //             text: "Cancel",
-  //             onPress: () => console.log("Cancel Pressed"),
-  //             style: "cancel"
-  //           },
-  //           { text: "Try Again", onPress: () => netFunction() }
-  //         ]
-  //       );
-  //     }
-  //   })
-  // }
-  // netFunction()
- 
-
-  const [totalItems, settotalItems] = useState(0)
-  const [renderMe, setrenderMe] = useState(false)
-
-  
-  const Tab = createBottomTabNavigator();
+   // const netFunction = ()=>{
+   //   NetworkUtils.isNetworkAvailable().then(res=>{
+   //     if(!res){
+   //       Alert.alert(
+   //         "Something Went Wrong!",
+   //         "Please Check Your Internet Connection",
+   //         [
+   //           {
+   //             text: "Cancel",
+   //             onPress: () => console.log("Cancel Pressed"),
+   //             style: "cancel"
+   //           },
+   //           { text: "Try Again", onPress: () => netFunction() }
+   //         ]
+   //       );
+   //     }
+   //   })
+   // }
+   // netFunction()
 
 
- return (
-     <Tab.Navigator>  
-       
-          <Tab.Screen name="Dashboard"  component={Dashboard}
+   const [totalItems, settotalItems] = useState(0)
+   const [renderMe, setrenderMe] = useState(false)
+
+
+   const Tab = createBottomTabNavigator();
+
+
+   return (
+      <Tab.Navigator>
+
+         <Tab.Screen name="Dashboard" component={Dashboard}
             options={{
                tabBarLabel: "Dashboard",
                // unmountOnBlur: true,
                header: () => null,
-              
-            tabBarIcon: ({focused, color }) =>  
-            <Ionicons name="home-outline" size={25} color={focused? '#BB2227': color} />,
-            }} 
-           
-          />
+
+               tabBarIcon: ({ focused, color }) =>
+                  <Ionicons name="home-outline" size={25} color={focused ? '#BB2227' : color} />,
+            }}
+
+         />
 
 
-          <Tab.Screen name="Products"  component={ProductScreen}
-             
-             options={{
-             tabBarIcon: ({ focused,color }) => 
-             <Ionicons name="gift-outline" size={25} color={focused? '#BB2227': color} />,
-             header: () => null,
-             }}  
-          
-          
-          />
+         <Tab.Screen name="Products" component={ProductScreen}
+
+            options={{
+               tabBarIcon: ({ focused, color }) =>
+                  <Ionicons name="gift-outline" size={25} color={focused ? '#BB2227' : color} />,
+               header: () => null,
+            }}
 
 
-          
-{/* 
+         />
+          <Tab.Screen name="OrderList" component={OrderList}
+            options={{
+               tabBarLabel: "Order",
+               // unmountOnBlur: true,
+               header: () => null,
+
+               tabBarIcon: ({ focused, color }) =>
+                  <AntDesign name="shoppingcart" size={25} color={focused ? '#BB2227' : color} />,
+            }}
+
+         />
+
+         <Tab.Screen name="ProfileScreen" component={ProfileScreen}
+            options={{
+               tabBarLabel: "Profile",
+               // unmountOnBlur: true,
+               header: () => null,
+
+               tabBarIcon: ({ focused, color }) =>
+                  <AntDesign name="user" size={25} color={focused ? '#BB2227' : color} />,
+            }}
+
+         />
+         
+
+
+
+         {/* 
             <Tab.Screen name="Profile"  component={AddProducts}
             
              options={{
@@ -98,13 +124,13 @@ export  function TabNav() {
              
             //   })}
            /> */}
-            
 
-          
-            
-          
-              
-        </Tab.Navigator>
 
-  );
+
+
+
+
+      </Tab.Navigator>
+
+   );
 }

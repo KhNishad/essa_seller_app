@@ -5,10 +5,15 @@ import { FontAwesome} from '@expo/vector-icons';
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { showMessage, hideMessage } from "react-native-flash-message";
+import * as SecureStore from 'expo-secure-store';
 
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
+
+// service 
+import LoginService from '../services/LoginService';
 
 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
@@ -19,20 +24,50 @@ export default function TabTwoScreen() {
 
     const [email, setemail] = useState('')
     const [passWord, setpassWord] = useState('')
+    const [loading, setloading] = useState(false)
 
 
     const LoginSubmit = async ()=>{
-        // if(reg.test(email)=== true){
-        //     const data = {
-        //         email:email,
-        //         password:passWord
-        //     }
-        //     console.log('..............res',data);
-        // }else{
-        //     alert('Invalid email')
-        // }
-        navigation.navigate('TabNav')
-    }
+      setloading(true)
+      const data  = {
+        emailOrPhone:email,
+        password: passWord
+      }
+      console.log('====================================',data);
+     if(data?.emailOrPhone && data?.password){
+          try {
+            let res = await LoginService.Login(data)
+            // console.log('====================================res',res?.message);
+
+            if(res?.statusCode == 200){
+              setloading(false)
+
+              showMessage({
+                message: `${res.message}`,
+                type: "success",
+              });
+              SecureStore.setItemAsync('accessToken',res?.data?.token?.accessToken);
+              navigation.navigate('TabNav');
+            }
+           
+
+          } catch (error) {
+            setloading(false)
+            showMessage({
+              message: `${error.message}`,
+              type: "danger",
+            });
+          }
+
+     }else{
+      showMessage({
+            message: `Both Fields are Required !`,
+            type: "danger",
+          });
+     }
+      
+       
+      }
 
 
   return (
@@ -65,7 +100,11 @@ export default function TabTwoScreen() {
             </TouchableOpacity>
             <View style={{alignItems:'center',margin:12}}>
                 <TouchableOpacity onPress={()=>LoginSubmit()} style={{backgroundColor:'#001E42',padding:10,width:deviceWidth/1.2,alignItems:'center',borderRadius:5}}>
-                    <Text style={[styles.title,{fontSize:16}]}>Login</Text>
+                   {loading?<ActivityIndicator style={{marginLeft:5}} size="small" color="#FFF" />
+                   :
+                   <Text style={[styles.title,{fontSize:16}]}>Login</Text>
+                   }
+                    
                 </TouchableOpacity>
             </View>
             

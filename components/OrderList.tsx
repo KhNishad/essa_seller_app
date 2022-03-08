@@ -21,7 +21,7 @@ const Table = ({userProducts}:any) => {
   const navigation = useNavigation(); 
 
  
-   let arr = ['','','','','','','','',]
+   let arr = ['','','','','','','','','',]
 
    
 
@@ -31,7 +31,7 @@ const Table = ({userProducts}:any) => {
   return (
 
     <SafeAreaView>
-        <ScrollView style={{marginBottom:300}}>
+        <ScrollView>
      <View>
            <View  style={{marginBottom:25}} >
                 {arr?.map((item,index)=>
@@ -41,14 +41,14 @@ const Table = ({userProducts}:any) => {
                   :
                   <Text  style={{display:'none'}}>{Color ='#F9F9FF'}</Text>
                   }
-                   <TouchableOpacity>
+                   <TouchableOpacity onPress={()=>navigation.navigate('OrderDatail')}>
                        <View  style={[styles.listContainer,{backgroundColor:Color}]}>      
                             <View style={styles.tableColumn1} >
                                 <Image style={styles.productImg} source={require('../assets/images/smart-phone-half-block.jpg')} /> 
                             </View> 
                            
                              <View style={styles.tableColumn2}>
-                            
+                             <Text style={{color:'#818181',fontWeight:'bold'}}>Order Id :001</Text>
                                 <Text style={{color:'#818181',fontWeight:'bold'}}>Samsung Galaxy </Text>
                             </View> 
                            <View style={styles.tableColumn3}>

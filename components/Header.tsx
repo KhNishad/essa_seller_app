@@ -22,7 +22,7 @@ export default function TabTwoScreen() {
       <View style={styles.headerBar}>
 
          <Ionicons name='menu-outline'  color={'#fff'} size={35}></Ionicons>
-         <Image style={{width:100,height:40,marginRight:10}} source={require('../assets/images/essa-logo.png')}></Image>
+         <Image style={{width:120,height:40,marginRight:10,resizeMode:'center'}} source={require('../assets/images/ESSA_Logo_PNG.png')}></Image>
          <View>
 
          </View>
