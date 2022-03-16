@@ -60,6 +60,8 @@ export default function TabTwoScreen() {
           }
 
      }else{
+      setloading(false)
+
       showMessage({
             message: `Both Fields are Required !`,
             type: "danger",
