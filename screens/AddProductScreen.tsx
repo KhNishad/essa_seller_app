@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, Button,Image } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Dimensions, Button,Image,TouchableOpacity } from 'react-native';
+import { FontAwesome5,Ionicons,Entypo } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 // import { Text } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome} from '@expo/vector-icons'
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const deviceWidth = Dimensions.get('window').width
+
+import Modal from '../components/categoryModal'
+
+// service 
+import brandService from '../services/brandService';
 
 export default function App() {
 
   const [productName, setproductName] = useState('');
   const [category, setcategory] = useState('');
+  const [brandList, setbrandList] = useState<any>([])
   const [quantity, setquantity] = useState('');
   const [stock, setstock] = useState('')
   const [price, setprice] = useState('');
@@ -28,11 +35,68 @@ export default function App() {
   const [insideCity, setinsideCity] = useState('');
   const [outSideCity, setoutSideCity] = useState('')
   const [orderLimit, setorderLimit] = useState('')
+  const [openModal, setopenModal] = useState(false);
+  const [delTimeIn, setdelTimeIn] = useState('')
+  const [delTimeOut, setdelTimeOut] = useState('')
+  const [selectedBrand, setselectedBrand] = useState('')
 
-
+  // category info
+  const [selectedCategoryId, setselectedCategoryId] = useState(null);
+  const [selectedCategoryTitle, setselectedCategoryTitle] = useState("");
+  const [parentCategoryId, setparentCategoryId] = useState(null);
 
   const createProduct = () => {
-    console.log('Hi')
+    const data = {
+      title: productName,
+      description:description,
+      images: Imagee,
+      // "attachments": [
+      //   {
+      //     "url": "string"
+      //   }
+      // ],
+      deliveryInfo: {
+        estDlvrTimeIn: delTimeIn,
+        estDlvrTimeOut: delTimeOut,
+        delChargIn: insideCity,
+        delChargOut: outSideCity,
+        maxOrderLimit: orderLimit
+      },
+      categories: [
+        selectedCategoryId
+      ],
+      brandId: selectedBrand,
+      // "attributes": [
+      //   {
+      //     "id": 0,
+      //     "value": [
+      //       "string"
+      //     ]
+      //   }
+      // ],
+      variations: [
+        {
+          sku: sku,
+          regularPrice: price,
+          salePrice: salePrice,
+          // "isNagotiable": true,
+          discountType: selectedValue,
+          discountAmount: amount,
+          quantity:quantity,
+          // "images": [
+          //   {
+          //     "url": "string",
+          //     "alt": "string"
+          //   }
+          // ],
+          // "var1TermId": 0,
+          // "var1TermValueId": 0,
+          // "var2TermId": 0,
+          // "var2TermValueId": 0
+        }
+      ]
+    }
+    console.log('........................,',data)
   }
 
   //   image upload
@@ -56,6 +120,27 @@ export default function App() {
     }
   };
 
+  // category modal
+  const openCategoryModal = () => {
+    setopenModal(true);
+  };
+
+  // get all brand
+  useEffect(() => {
+    const getBrands = async()=>{
+      try {
+        let res  = await brandService.getAllBrand()
+        setbrandList(res?.data)        
+
+      } catch (error) {
+        
+      }
+
+    }
+    getBrands()
+
+  }, [])
+  
 
   return (
     <SafeAreaView>
@@ -78,36 +163,67 @@ export default function App() {
             />
           </View>
 
-          <View >
-            <Text style={styles.labelText}>Categories</Text>
-            <View style={styles.navPicker}>
-              <Picker
-                selectedValue={selectedValue}
-                style={{ height: 50 }}
-                // itemStyle={{paddingBottom:20}}
-                mode="dropdown"
-                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+          
+            <View style={styles.container2}>
+                <TouchableOpacity
+                  style={{ paddingTop: 5 }}
+                  onPress={() => openCategoryModal()}
+                  disabled={selectedCategoryTitle ? true : false}
+                >
+                  <View style={styles.addCatgory}>
+                    <Ionicons
+                      style={{ color: "#FFFFFF", fontSize: 25 }}
+                      name="ios-add-circle-outline"
+                    ></Ionicons>
+                    <Text style={{ color: "#FFFFFF", fontSize: 15 }}>
+                      {" "}
+                      Add Category
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingTop: 10,
+                }}
               >
-                <Picker.Item label="Mobile" value="java" />
-                <Picker.Item label="Bike" value="js" />
-                <Picker.Item label="Fashion" value="js" />
-              </Picker>
-            </View>
-
-          </View>
+                {selectedCategoryTitle != "" ? (
+                  <View style={styles.categoryField}>
+                    <Text>{selectedCategoryTitle}</Text>
+                    <View>
+                      <Entypo
+                        onPress={() => {
+                          setselectedCategoryTitle(""),
+                            // setAttribute(false),
+                            setselectedCategoryId(null)
+                            // (brands = []),
+                        }}
+                        style={{ paddingLeft: 2 }}
+                        name="cross"
+                        color="red"
+                        size={20}
+                      />
+                    </View>
+                  </View>
+                ) : null}
+              </View>
           <View >
             <Text style={styles.labelText}>Brands</Text>
             <View style={styles.navPicker}>
               <Picker
-                selectedValue={selectedValue}
+                selectedValue={selectedBrand}
                 style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
                 // itemStyle={{paddingBottom:20}}
                 mode="dropdown"
-                onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+                onValueChange={(itemValue, itemIndex) => setselectedBrand(itemValue)}
               >
-                <Picker.Item label="Samsung" value="java" />
-                <Picker.Item label="Honda" value="js" />
-                <Picker.Item label="Suzuki" value="js" />
+                {brandList?.length>0 && brandList?.map((item:any,index:number)=>
+                    <Picker.Item key={index} label={item?.title} value={item?.id} />
+                )}
+                
 
               </Picker>
             </View>
@@ -135,20 +251,6 @@ export default function App() {
             />
           </View>
           <View>
-          {/* <View >
-            <Text style={styles.labelText}>Status</Text>
-            <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
-              <View style={{flexDirection:'row',paddingHorizontal:5}}>
-              <FontAwesome name="circle-thin" size={18}/>
-              <Text style={{marginLeft:5}}>Publish</Text>
-              </View>
-              <View style={{flexDirection:'row', paddingHorizontal:10}}>
-              <FontAwesome name="circle-thin" size={18}/>
-              <Text style={{marginLeft:5}}>Unpublish</Text>
-              </View>
-            </View>
-          </View> */}
-
 
           </View>
 
@@ -184,21 +286,27 @@ export default function App() {
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
               >
-                <Picker.Item label="Samsung" value="java" />
-                <Picker.Item label="Honda" value="js" />
-                <Picker.Item label="Suzuki" value="js" />
+                <Picker.Item label="Fixed" value="fixed" />
+                <Picker.Item label="Percentage" value="percentage" />
 
               </Picker>
             </View>
 
           </View>
           <View >
-            <Text style={styles.labelText}>Ammount</Text>
+            <Text style={styles.labelText}>Dis. Amount</Text>
             <TextInput
               style={styles.input}
               onChangeText={setamount}
               placeholder="$ Amount"
               value={amount}
+              onBlur={()=>{
+                if(selectedValue == 'fixed'){
+                  setsalePrice(price-amount)
+                }else{
+                  setsalePrice((price*amount)/100)
+                }
+              }}
 
             />
           </View>
@@ -206,10 +314,9 @@ export default function App() {
             <Text style={styles.labelText}>Sale Price</Text>
             <TextInput
               style={styles.input}
-              onChangeText={setsalePrice}
               placeholder="$ Sale Price"
-              value={salePrice}
-
+              value={salePrice.toString()}
+              editable={false}
             />
           </View>
           <View >
@@ -233,24 +340,65 @@ export default function App() {
             />
           </View>
           <View >
+            
             <Text style={styles.labelText}>Delevery Time(In City)</Text>
-            <TextInput
+            {/* <TextInput
               style={styles.input}
-              onChangeText={setprice}
+              onChangeText={setdelTimeIn}
               placeholder="selected Delevery Time(In City)"
-              // value={price}
+              value={delTimeIn}
 
-            />
+            /> */}
+            <View style={styles.navPicker}>
+             <Picker
+                selectedValue={delTimeIn}
+                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                // itemStyle={{paddingBottom:20}}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => setdelTimeIn(itemValue)}
+              >
+                    <Picker.Item  label='1 hour' value={'1'} />
+                    <Picker.Item  label='2 hour' value={'2'} />
+                    <Picker.Item  label='3 hour' value={'3'} />
+                    <Picker.Item  label='4 hour' value={'4'} />
+                    <Picker.Item  label='5 hour' value={'5'} />
+                    <Picker.Item  label='6 hour' value={'6'} />
+                    <Picker.Item  label='7 hour' value={'7'} />
+                    <Picker.Item  label='8 hour' value={'8'} />
+                
+
+              </Picker>
+              </View>
           </View>
           <View >
             <Text style={styles.labelText}>Delevery Time(Out City)</Text>
-            <TextInput
+            {/* <TextInput
               style={styles.input}
-              onChangeText={setprice}
+              onChangeText={setdelTimeOut}
               placeholder="selected Delevery Time(Out City)"
-              // value={price}
+              value={delTimeOut}
 
-            />
+            /> */}
+             <View style={styles.navPicker}>
+             <Picker
+                selectedValue={delTimeOut}
+                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                // itemStyle={{paddingBottom:20}}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => setdelTimeOut(itemValue)}
+              >
+                    <Picker.Item  label='1 hour' value={'1'} />
+                    <Picker.Item  label='2 hour' value={'2'} />
+                    <Picker.Item  label='3 hour' value={'3'} />
+                    <Picker.Item  label='4 hour' value={'4'} />
+                    <Picker.Item  label='5 hour' value={'5'} />
+                    <Picker.Item  label='6 hour' value={'6'} />
+                    <Picker.Item  label='7 hour' value={'7'} />
+                    <Picker.Item  label='8 hour' value={'8'} />
+                
+
+              </Picker>
+              </View>
           </View>
           <View >
             <Text style={styles.labelText}>Inside City</Text>
@@ -285,7 +433,7 @@ export default function App() {
 
           <View style={{ alignItems: 'center', marginVertical: 10 }}>
             <Button
-              onPress={createProduct}
+              onPress={()=>createProduct()}
               title="Add Product"
               color="#FF9411"
               accessibilityLabel="Learn more about this purple button"
@@ -294,6 +442,15 @@ export default function App() {
 
         </View>
       </ScrollView>
+      {openModal ? (
+            <Modal
+              setopenModal={setopenModal}
+              setparentCategoryId={setparentCategoryId}
+              setselectedCategoryId={setselectedCategoryId}
+              setselectedCategoryTitle={setselectedCategoryTitle}
+              // setAttribute={setAttribute}
+            />
+          ) : null}
 
     </SafeAreaView>
   );
@@ -324,5 +481,32 @@ const styles = StyleSheet.create({
   labelText: {
     fontWeight: 'bold',
     padding: 5
-  }
+  },
+  container2: {
+    // paddingLeft: 20,
+    paddingVertical: 10,
+    paddingRight: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  addCatgory: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#BB2025",
+    borderRadius: 5,
+    backgroundColor: "#BB2025",
+    paddingHorizontal: 10,
+    flexDirection: "row",
+  },
+  categoryField: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "red",
+    borderRadius: 50,
+    paddingHorizontal: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
