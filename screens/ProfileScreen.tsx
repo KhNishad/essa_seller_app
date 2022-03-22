@@ -6,20 +6,15 @@ import { Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useIsFocused } from "@react-navigation/native";
 import * as ImagePicker from 'expo-image-picker';
-
-
-
+import { Picker } from '@react-native-picker/picker';
 
 // components
 import Header from '../components/Header';
-
-
+// service
+import AddressService from '../services/AddressService';
 
 const deviceWidth = Math.floor(Dimensions.get('window').width)
 
-
-
-let product: any[];
 const ViewProduct = () => {
 
   const navigation = useNavigation();
@@ -30,6 +25,21 @@ const ViewProduct = () => {
   const [email, setemail] = useState('');
   const [address, setaddress] = useState('');
   const [img, setimg] = useState('')
+  const [whatsapp, setwhatsapp] = useState('');
+  const [facebook, setfacebook] = useState('');
+  const [Nid, setNid] = useState('');
+  const [Imagee, setImagee] = useState([]);
+  const [passport, setpassport] = useState('');
+  const [birthCertificate, setbirthCertificate] = useState('');
+  const [tin, settin] = useState('');
+  const [selectedZone, setselectedZone] = useState("Zone");
+  const [selectedTeritory, setselectedTeritory] = useState('Teritory')
+  const [selectedRegion, setselectedRegion] = useState('Region')
+
+  // data from back
+  const [zones, setzones] = useState<any>([])
+  const [regions, setregions] = useState<any>([])
+  const [teritories, setteritories] = useState<any>([])
 
 
   //   image upload
@@ -49,11 +59,116 @@ const pickImage = async () => {
   }
 };
 
+// get address zone 
+
+useEffect(() => {
+  
+ const getZone = async ()=>{
+   try {
+   let res = await AddressService.getZone()
+     if(res){
+      setzones(res?.data)
+     }
+     
+   } catch (error) {
+     
+   }
+ }
+ getZone()
+ 
+}, [])
+
+// get region by zone 
+
+useEffect(() => {
+  
+  const getRegionbyZone = async ()=>{
+    setselectedRegion('')
+    try {
+        let res = await AddressService.getRegionByZone(selectedZone)
+        setregions(res?.data?.children)
+    } catch (error) {
+      
+    }
+  }
+  getRegionbyZone()
+  
+ }, [selectedZone])
+
+ useEffect(() => {
+  setselectedTeritory('')
+  const getTeritoryByregion = async ()=>{
+    try {
+        let res = await AddressService.getTeritoryByregion(selectedRegion)
+        setteritories(res?.data?.children)
+    } catch (error) {
+      
+    }
+  }
+  getTeritoryByregion()
+  
+ }, [selectedRegion])
+
+
+
+
+const submit = async()=>{
+ const data =  {
+    name:fullname,
+    email: email,
+    phone: phone,
+    logo: '',
+    socialMedia: {
+      whatsApp: {
+        number: whatsapp
+      },
+      facebook: {
+        url: facebook
+      }
+    },
+    documents: {
+      nid: {
+        number: Nid,
+        photoUrl: "string"
+      },
+      passport: {
+        number: passport,
+        photoUrl: "string"
+      },
+      birthCertificate: {
+        number: birthCertificate,
+        photoUrl: "string"
+      },
+      tin: {
+        number:tin,
+        photoUrl: "string"
+      }
+    },
+    address: {
+      zone: {
+        id: selectedZone,
+        title: "string"
+      },
+      region: {
+        id: selectedRegion,
+        title: "string"
+      },
+      tarrritory: {
+        id: selectedTeritory,
+        title: "string"
+      },
+      more: "string"
+    }
+  }
+  console.log('====================================payload',data);
+  
+}
+
 
   return (
     <SafeAreaView>
       <ScrollView >
-        <View >
+        <View style={{backgroundColor:'#fff'}}>
           <Header />
           <View style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
@@ -83,7 +198,7 @@ const pickImage = async () => {
               />
             </View>
             <View >
-              <Text style={styles.labelText}>Full Name</Text>
+              <Text style={styles.labelText}>Name</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={setfullname}
@@ -101,22 +216,169 @@ const pickImage = async () => {
               />
             </View>
             <View >
-              <Text style={styles.labelText}>Address</Text>
+              <Text style={styles.labelText}>Whatsapp</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setaddress}
-                placeholder="Address"
-                value={address}
+                onChangeText={setwhatsapp}
+                placeholder="WhatsApp Number"
+                value={whatsapp}
               />
             </View>
+            <View >
+              <Text style={styles.labelText}>Facebook</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setfacebook}
+                placeholder="Facebook Url"
+                value={facebook}
+              />
+            </View>
+            <View >
+              <Text style={styles.labelText}>NID</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setNid}
+                placeholder="NID No"
+                value={Nid}
+              />
+            </View>
+            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {Imagee?.length>0 && Imagee?.map((item,index)=>
+              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+             </View>
+            )}
+              <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+              </View>
+
+          </View>
+            <View >
+              <Text style={styles.labelText}>Passport</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setpassport}
+                placeholder="NID No"
+                value={passport}
+              />
+            </View>
+            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {Imagee?.length>0 && Imagee?.map((item,index)=>
+              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+             </View>
+            )}
+              <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+              </View>
+
+          </View>
+            <View >
+              <Text style={styles.labelText}>Birth Certificate</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={setbirthCertificate}
+                placeholder="NID No"
+                value={birthCertificate}
+              />
+            </View>
+            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {Imagee?.length>0 && Imagee?.map((item,index)=>
+              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+             </View>
+            )}
+              <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+              </View>
+
+          </View>
+            <View >
+              <Text style={styles.labelText}>Passport</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={settin}
+                placeholder="NID No"
+                value={tin}
+              />
+            </View>
+            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {Imagee?.length>0 && Imagee?.map((item,index)=>
+              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+             </View>
+            )}
+              <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+              </View>
+
+          </View>
+          <View >
+            <Text style={styles.labelText}>Adress</Text>
+            <View style={[styles.navPicker,{marginBottom:10}]}>
+              <Picker
+                selectedValue={selectedZone}
+                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                itemStyle={{paddingBottom:20}}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => setselectedZone(itemValue)}
+                
+              >
+                <Picker.Item  label='Select Zone' value={'unselctable'} />
+                {zones?.map((item:any,index:number)=>
+                    <Picker.Item key={index} label={item?.title} value={item?.id} />
+                )}
+
+              </Picker>
+            </View>
+
+          </View>
+          <View >
+            
+            <View style={[styles.navPicker,{marginBottom:10}]}>
+              <Picker
+                selectedValue={selectedRegion}
+                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                // itemStyle={{paddingBottom:20}}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => setselectedRegion(itemValue)}
+              >
+                 <Picker.Item  label='Select Region' value={'unselctable'} />
+                {regions?.map((item:any,index:number)=>
+                    <Picker.Item key={index} label={item?.title} value={item?.id} />
+                )}
+
+              </Picker>
+            </View>
+
+          </View>
+          <View >
+            
+            <View style={styles.navPicker}>
+              <Picker
+                selectedValue={selectedTeritory}
+                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                // itemStyle={{paddingBottom:20}}
+                mode="dropdown"
+                
+                onValueChange={(itemValue, itemIndex) => setselectedTeritory(itemValue)}
+              >
+                <Picker.Item  label='Select Territory' value={'unselctable'} />
+
+                 {teritories?.map((item:any,index:number)=>
+                    <Picker.Item key={index} label={item?.title} value={item?.id} />
+                 )}
+
+              </Picker>
+            </View>
+
+          </View>
             <View style={{alignItems:'center',margin:12}}>
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity onPress={()=>submit()} style={styles.btn}>
                     <Text style={[styles.title,{fontSize:16}]}>Update</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{alignItems:'center'}}>
-                <Text style={[styles.title,{fontSize:14,color:'#FF9411',marginBottom:15}]}>Change Password</Text>
-            </TouchableOpacity>
+           
           </View>
         </View>
       </ScrollView>
@@ -168,6 +430,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 5
   },
+  navPicker: {
+    width: deviceWidth - 30,
+    borderColor: '#1239',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  
   input: {
     // width: deviceWidth / 1.1,
     height: 40,
