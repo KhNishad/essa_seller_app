@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, ScrollView, RefreshControl, TouchableOpacity, TextInput, SafeAreaView, Image } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, RefreshControl, TouchableOpacity, TextInput, SafeAreaView, Image, Alert } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
@@ -12,8 +12,13 @@ import { Picker } from '@react-native-picker/picker';
 import Header from '../components/Header';
 // service
 import AddressService from '../services/AddressService';
+import ProductService from '../services/ProductService';
 
 const deviceWidth = Math.floor(Dimensions.get('window').width)
+
+
+const apiImagepath ='http://103.119.71.9:4400';
+
 
 const ViewProduct = () => {
 
@@ -35,6 +40,11 @@ const ViewProduct = () => {
   const [selectedZone, setselectedZone] = useState("Zone");
   const [selectedTeritory, setselectedTeritory] = useState('Teritory')
   const [selectedRegion, setselectedRegion] = useState('Region')
+  const [nidImg, setnidImg] = useState('')
+  const [passportImg, setpassportImg] = useState('')
+  const [birthImg, setbirthImg] = useState('')
+  const [tinImg, settinImg] = useState('')
+  const [profileImg, setprofileImg] = useState('')
 
   // data from back
   const [zones, setzones] = useState<any>([])
@@ -47,16 +57,43 @@ const pickImage = async () => {
   // No permissions request is necessary for launching the image library
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
+    allowsEditing: false,
     aspect: [4, 3],
     quality: 1,
   });
 
-  console.log(result);
 
   if (!result.cancelled) {
-    setimg(result.uri);
+
+    let formdata = new FormData();
+    formdata.append('file', {
+      uri: result.uri ,
+      type: `image/${result.uri.split('.').pop()}`, 
+      name: result.uri.split('/').pop()
+
+  })
+     console.log('..................res',formdata);
+     
+     ProductService.ImageUpload(formdata).then(res=>{
+      if(res.hasOwnProperty("error") && res.error != ""){
+        Alert.alert(
+          "Image upload failed!",
+          "Image size too large, maximum allowed image size 5MB",
+          [{ text: "OK", onPress: () => {} }],
+          { cancelable: false }
+        );
+      }else{
+         console.log('..............res',res);
+      }
+    }).catch(err=>{
+      console.log('err',err);
+    })
   }
+  
+
+
+
+
 };
 
 // get address zone 
@@ -113,7 +150,14 @@ useEffect(() => {
 
 
 const submit = async()=>{
+
+  let zone  = zones.findIndex((el:any)=> el.id == selectedZone)
+  let region  = regions.findIndex((el:any)=> el.id == selectedRegion)
+  let teriory  = regions.findIndex((el:any)=> el.id == selectedTeritory)
+
+
  const data =  {
+   
     name:fullname,
     email: email,
     phone: phone,
@@ -146,16 +190,16 @@ const submit = async()=>{
     },
     address: {
       zone: {
-        id: selectedZone,
-        title: "string"
+        id: zones[zone]?.id,
+        title: zones[zone]?.title
       },
       region: {
-        id: selectedRegion,
-        title: "string"
+        id: regions[region]?.id,
+        title: regions[region]?.title
       },
       tarrritory: {
-        id: selectedTeritory,
-        title: "string"
+        id: teritories[teriory]?.id,
+        title: teritories[teriory]?.title
       },
       more: "string"
     }
@@ -177,7 +221,7 @@ const submit = async()=>{
           </View>
           <View style={styles.uploadimage}>
             <View>
-              <Image style={styles.img} source={{ uri: 'https://i0.wp.com/newdoorfiji.com/wp-content/uploads/2018/03/profile-img-1.jpg?ssl=1' }}>
+              <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
 
               </Image>
               <FontAwesome5 onPress={()=>pickImage()} color='#FF9411' style={styles.cam} name='camera'></FontAwesome5>
@@ -243,11 +287,10 @@ const submit = async()=>{
               />
             </View>
             <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
-            {Imagee?.length>0 && Imagee?.map((item,index)=>
-              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+              <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${nidImg}` }}></Image>
              </View>
-            )}
+          
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
@@ -263,11 +306,10 @@ const submit = async()=>{
               />
             </View>
             <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
-            {Imagee?.length>0 && Imagee?.map((item,index)=>
-              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+              <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${passportImg}` }}></Image>
              </View>
-            )}
+          
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
@@ -283,18 +325,16 @@ const submit = async()=>{
               />
             </View>
             <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
-            {Imagee?.length>0 && Imagee?.map((item,index)=>
-              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+              <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${birthImg}` }}></Image>
              </View>
-            )}
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
           </View>
             <View >
-              <Text style={styles.labelText}>Passport</Text>
+              <Text style={styles.labelText}>TIN</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={settin}
@@ -303,11 +343,10 @@ const submit = async()=>{
               />
             </View>
             <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
-            {Imagee?.length>0 && Imagee?.map((item,index)=>
-              <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+              <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${tinImg}` }}></Image>
              </View>
-            )}
+            
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
@@ -321,7 +360,7 @@ const submit = async()=>{
                 style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
                 itemStyle={{paddingBottom:20}}
                 mode="dropdown"
-                onValueChange={(itemValue, itemIndex) => setselectedZone(itemValue)}
+                onValueChange={(itemValue, itemIndex) =>  setselectedZone(itemValue)}
                 
               >
                 <Picker.Item  label='Select Zone' value={'unselctable'} />

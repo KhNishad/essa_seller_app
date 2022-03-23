@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {LineChart,BarChart,PieChart,ProgressChart,ContributionGraph,StackedBarChart} from "react-native-chart-kit";
+import * as SecureStore from 'expo-secure-store';
 
 // components
 import Header from '../components/Header'
@@ -23,7 +24,10 @@ export default function TabTwoScreen() {
 
     const [email, setemail] = useState('')
     const [passWord, setpassWord] = useState('')
-
+const logout = ()=>{
+ 
+SecureStore.deleteItemAsync('accessToken')
+}
 
   return (
 
@@ -86,10 +90,10 @@ export default function TabTwoScreen() {
 
                 <View style={styles.cardContainer}>
 
-                    <View style={styles.card}>
+                    <TouchableOpacity onPress={()=>logout()} style={styles.card}>
                       <Text style={{color:'#fff'}}>New Order</Text>
                       <Text style={{paddingTop:15,color:'#fff'}}>BDT.250</Text>
-                    </View>
+                    </TouchableOpacity>
 
                     <View style={[styles.card,{backgroundColor:'#4BD97B'}]}>
                       <Text style={{color:'#fff'}}>Products</Text>

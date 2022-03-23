@@ -7,10 +7,15 @@ async function getAllCategories() {
   return data;
 }
 
+async function getAttributeByCategory(cat:any) {
+  const data = await request(`/term/attribute/associate/${cat}`)
+  return data;
+}
 
 
 
-export default {getAllCategories}
+
+export default {getAllCategories,getAttributeByCategory}
 
 
 

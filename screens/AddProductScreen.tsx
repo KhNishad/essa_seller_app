@@ -12,9 +12,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const deviceWidth = Dimensions.get('window').width
 
 import Modal from '../components/categoryModal'
+import AttrbuteMOdal from '../components/productAttributesModal'
 
 // service 
 import brandService from '../services/brandService';
+import categoryServices from '../services/categoryServices';
 
 export default function App() {
 
@@ -39,11 +41,14 @@ export default function App() {
   const [delTimeIn, setdelTimeIn] = useState('')
   const [delTimeOut, setdelTimeOut] = useState('')
   const [selectedBrand, setselectedBrand] = useState('')
+  const [attributeModal, setattributeModal] = useState(false);
 
   // category info
   const [selectedCategoryId, setselectedCategoryId] = useState(null);
   const [selectedCategoryTitle, setselectedCategoryTitle] = useState("");
   const [parentCategoryId, setparentCategoryId] = useState(null);
+  const [AtributesData, setAtributesData] = useState([]);
+
 
   const createProduct = () => {
     const data = {
@@ -125,6 +130,9 @@ export default function App() {
     setopenModal(true);
   };
 
+  
+  
+
   // get all brand
   useEffect(() => {
     const getBrands = async()=>{
@@ -138,6 +146,18 @@ export default function App() {
 
     }
     getBrands()
+
+    const getAttributes = async()=>{
+      try {
+        let res  = await categoryServices.getAttributeByCategory(selectedCategoryId)
+        console.log('...............atrr',res);
+        
+      } catch (error) {
+        
+      }
+
+    }
+    getAttributes()
 
   }, [])
   
@@ -429,6 +449,9 @@ export default function App() {
               value={orderLimit}
 
             />
+            <View>
+              <Text onPress={()=>setattributeModal(true)}>Add Attribute</Text>
+            </View>
           </View>
 
           <View style={{ alignItems: 'center', marginVertical: 10 }}>
@@ -451,6 +474,13 @@ export default function App() {
               // setAttribute={setAttribute}
             />
           ) : null}
+          {attributeModal ? (
+                <AttrbuteMOdal
+                  setAtributesData={setAtributesData}
+                  selectedCategoryId={selectedCategoryId}
+                  setattributeModal={setattributeModal}
+                />
+              ) : null}
 
     </SafeAreaView>
   );
