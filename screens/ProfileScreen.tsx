@@ -53,48 +53,94 @@ const ViewProduct = () => {
 
 
   //   image upload
-const pickImage = async () => {
-  // No permissions request is necessary for launching the image library
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: false,
-    aspect: [4, 3],
-    quality: 1,
-  });
+// const pickImage = async () => {
+//   // No permissions request is necessary for launching the image library
+//   let result = await ImagePicker.launchImageLibraryAsync({
+//     mediaTypes: ImagePicker.MediaTypeOptions.All,
+//     allowsEditing: false,
+//     aspect: [4, 3],
+//     quality: 1,
+//   });
 
 
-  if (!result.cancelled) {
+//   if (!result.cancelled) {
 
-    let formdata = new FormData();
-    formdata.append('file', {
-      uri: result.uri ,
-      type: `image/${result.uri.split('.').pop()}`, 
-      name: result.uri.split('/').pop()
+//     let formdata = new FormData();
+//   //   formdata.append('file', {
+//   //     uri: result.uri ,
+//   //     type: `image/${result.uri.split('.').pop()}`, 
+//   //     name: result.uri.split('/').pop()
 
-  })
-     console.log('..................res',formdata);
+//   // })
+
+//   const file = {
+//       name :  result.uri.split('/').pop(),
+//       uri :  result.uri ,
+//       mimetype : `image/${result.uri.split('.').pop()}`, 
+//   }
+//   formdata.append('file',file)
      
-     ProductService.ImageUpload(formdata).then(res=>{
-      if(res.hasOwnProperty("error") && res.error != ""){
-        Alert.alert(
-          "Image upload failed!",
-          "Image size too large, maximum allowed image size 5MB",
-          [{ text: "OK", onPress: () => {} }],
-          { cancelable: false }
-        );
-      }else{
-         console.log('..............res',res);
-      }
-    }).catch(err=>{
-      console.log('err',err);
-    })
-  }
+//      ProductService.ImageUpload(formdata).then(res=>{
+//       console.log('..............res',res);
+
+//       if(res.hasOwnProperty("error") && res.error != ""){
+//         Alert.alert(
+//           "Image upload failed!",
+//           "Image size too large, maximum allowed image size 5MB",
+//           [{ text: "OK", onPress: () => {} }],
+//           { cancelable: false }
+//         );
+//       }else{
+//          console.log('..............res',res);
+//       }
+//     }).catch(err=>{
+//       console.log('err',err);
+//     })
+//   }
   
 
+  // image upload
+  const reviewImg =  async () =>{
+
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+      console.log('............result',result);
+      
+    if (!result.cancelled) {
+      let formdata = new FormData();
+      formdata.append('file', {
+        uri: result.uri ,
+        type: `image/${result.uri.split('.').pop()}`, 
+        name: result.uri.split('/').pop()
+
+    })
+       ProductService.ImageUpload(formdata).then(res=>{
+        if(res.hasOwnProperty("error") && res.error != ""){
+          Alert.alert(
+            "Image upload failed!",
+            "Image size too large, maximum allowed image size 5MB",
+            [{ text: "OK", onPress: () => '' }],
+            { cancelable: false }
+          );
+        }else{
+        
+         console.log('.........res',res);
+         
+        }
+        // CheckImg = res 
+      })
+    }
+  }
 
 
 
-};
+
+// };
 
 // get address zone 
 
@@ -157,7 +203,7 @@ const submit = async()=>{
 
 
  const data =  {
-   
+
     name:fullname,
     email: email,
     phone: phone,
@@ -224,7 +270,7 @@ const submit = async()=>{
               <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
 
               </Image>
-              <FontAwesome5 onPress={()=>pickImage()} color='#FF9411' style={styles.cam} name='camera'></FontAwesome5>
+              <FontAwesome5 onPress={()=>reviewImg()} color='#FF9411' style={styles.cam} name='camera'></FontAwesome5>
 
 
             </View>

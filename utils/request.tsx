@@ -32,7 +32,9 @@ const codeMessage = {
  */
 
 let url='http://103.119.71.9:4400';
-// let url='http://192.168.0.104:3000/';
+
+
+// let url='http://192.168.0.105:3000';
 // let url= 'http://localhost:3000/'; 
 
 
@@ -81,7 +83,7 @@ const request = async (link, params={}, noPrefix = null, header = null) => {
         
 
         return axios(options).then(res=>{
-            // console.log('res ====', res.data);
+            console.log('res ====', res.data);
             return res.data;
         }).catch(err=>{
             // console.log('reqest == err',err?.response?.data);

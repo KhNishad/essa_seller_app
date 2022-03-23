@@ -3,10 +3,10 @@ import request from '../utils/request';
 
 
 async function ImageUpload(file:any) {
-  
-   
-  const data = await request('/media/upload',{method:'POST',data:file})
-  return data;
+    console.log('..................file',file);
+
+  const res = await request('/media/upload',{method:'POST',data:file})
+  return res;
 }
 
 
