@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image,StyleSheet,View,Text,TouchableOpacity} from 'react-native';
+import { Image,StyleSheet,View,Text,TouchableOpacity,RefreshControl} from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {useState,useEffect} from 'react';
@@ -15,33 +15,41 @@ const deviceWidth = Math.floor(Dimensions.get('window').width)
 let Color = '';
 
 
-const Table = ({userProducts}:any) => {
+const Table = ({userProducts,setrefreshing,refreshing}:any) => {
  
+
+       // pull refresh  function
+       function wait (time:any){
+        return new Promise(resolve =>{
+          setTimeout(resolve,time)
+        })
+      }
+      const refresh = React.useCallback (()=>{
+        setrefreshing(true)
+        wait(1000).then(()=>{
+          setrefreshing(false)
+          
+        })
+      },[refreshing])
 
   const navigation = useNavigation(); 
 
  
-   let arr = ['','','','','','','','',]
-
-   
-
-
-
    
   return (
 
     <SafeAreaView>
-        <ScrollView style={{marginBottom:300}}>
-     <View>
+        <ScrollView style={{height:'90%'}} refreshControl={ <RefreshControl  refreshing={refreshing} onRefresh={refresh}/>}>
+     <View style={{flex:1}}>
            <View  style={{marginBottom:25}} >
-                {arr?.map((item,index)=>
+                {userProducts?.map((item:any,index:number)=>
                   <View key={index}>
                   {index%2 === 0?
                   <Text   style={{display:'none'}}> {Color ='#FFFFFF'}</Text>
                   :
                   <Text  style={{display:'none'}}>{Color ='#F9F9FF'}</Text>
                   }
-                   <TouchableOpacity>
+                   <TouchableOpacity onPress={()=>navigation.navigate('AddProducts',{id:item?.id})}>
                        <View  style={[styles.listContainer,{backgroundColor:Color}]}>      
                             <View style={styles.tableColumn1} >
                                 <Image style={styles.productImg} source={require('../assets/images/smart-phone-half-block.jpg')} /> 
@@ -49,17 +57,20 @@ const Table = ({userProducts}:any) => {
                            
                              <View style={styles.tableColumn2}>
                             
-                                <Text style={{color:'#818181',fontWeight:'bold'}}>Samsung Galaxy </Text>
+                                <Text style={{color:'#818181',fontWeight:'bold'}}>{item?.title}</Text>
                             </View> 
                            <View style={styles.tableColumn3}>
-                                <Text style={styles.infoText}>Total Price:
-                                     <Text   style={{fontWeight:'bold'}}>$250</Text> 
+                                <Text style={styles.infoText}>Sale Price:
+                                     <Text   style={{fontWeight:'bold'}}>${item?.productVariation[0]?.salePrice}</Text> 
                                 </Text>
                                 <Text style={styles.infoText}>Quantity:
                                      <Text style={{fontWeight:'bold',fontSize:12}}>02</Text>
                                 </Text>
                                  <Text style={styles.infoText}>Category:
-                                   <Text  style={{fontWeight:'bold'}}>Mobile</Text> 
+                                   <Text  style={{fontWeight:'bold'}}>{item?.category?.title}</Text> 
+                                </Text>
+                                <Text style={styles.infoText}>Status:
+                                   <Text  style={{fontWeight:'bold'}}>{item?.activeStatus == 1?'Published':item?.activeStatus == 2?'Pending':item?.activeStatus == 3?'Rejected':item?.activeStatus == 4?'Draft':item?.activeStatus ==5?'Archive':''}</Text> 
                                 </Text>
                             </View> 
                      </View>

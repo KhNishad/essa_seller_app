@@ -48,11 +48,12 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
           }
 
          // function to handle all the inputs selecting 
-         const productTermValuesF = (title,id,item_id)=>{
+         const productTermValuesF = (title:any,id:any,item_id:any)=>{
+
+          
             const attributes = {
-              productTermValue:title,
+              value:title,
               id : id,
-              title : item_id
             }
       
             if(attributeArray.length > 0){
@@ -69,18 +70,17 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
 
 
          // submit attribute form
-         const submitAttributes = (data) =>{
+         const submitAttributes = () =>{
+          console.log('............call',attributeArray);
           
            setAtributesData(attributeArray)
-         
-           if(data){
-            closeModal()
-            attributeArray= []
-           }
+           closeModal()
+           attributeArray= []
+           
           }
 
           // open multiple option
-         const openMultiSelect = (parentId) =>{
+         const openMultiSelect = (parentId:any) =>{
             if(parentId == multiSelectitemId){
               setmultiSelectitemId('')
             }else{
@@ -88,46 +88,49 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
             }
           }
           // select multiple option
-          const selectmultiValue = (title,itemId,itemTitle)=>{
+          const selectmultiValue = (title:any,itemId:any,itemTitle:any)=>{
+
             setmultivalueS([...multivalueS, title])
-        if(multiValue.length > 0){
-          multiValue.map((item,index)=>{
-            if(item == title){
-              console.log('already exits');
-              multiValue.splice(index,1)
-            }
-          })
-        }
-          multiValue.push(title)
-      
-        // console.log("......values",multiValue);
+
+              if(multiValue.length > 0){
+                multiValue.map((item,index)=>{
+                  if(item == title){
+                    console.log('already exits');
+                    multiValue.splice(index,1)
+                  }
+                })
+              }
+                multiValue.push(title)
+            
+              console.log("......values",multiValue);
           }
 
-          const submitMulti = (id,title)=>{
-      // let id2 = id
+          const submitMulti = (id:any,title:any)=>{
+             // let id2 = id
             productTermValuesF(multiValue,id,title)
             multiValue=[]
             setmultiSelectitemId('')
           }
 
          // filtering and pushing selected items in the array coming from database
-    //      if(cnt < 1 && attributes.length > 0 ){
-    // for(let i = 0;i<productTermValues?.length;i++){
-    //   for(let j = 0;j<attributes?.length;j++){
-    //     if(productTermValues[i]?.ProductTermValue_termId == attributes[j]?.id ){
-    //       if(productTermValues[i]?.term_type == 'multiple-choice'){
-    //         attributes[j].selected = productTermValues[i].attributeValue
-    //         productTermValuesF(productTermValues[i]?.attributeValue?.split(","),productTermValues[i].ProductTermValue_termId,productTermValues[i].ProductTermValue_termTitle)
-    //         break;
-    //       }else{
-    //         attributes[j].selected = productTermValues[i].ProductTermValue_termValue
-    //         productTermValuesF(productTermValues[i].ProductTermValue_termValue,productTermValues[i].ProductTermValue_termId,productTermValues[i].ProductTermValue_termTitle)
-    //         break;
-    //       }
-    //      }
-    //     }
-    //   }
-    //   cnt++;
+         if(cnt < 1 && attributes.length > 0 ){
+    for(let i = 0;i<productTermValues?.length;i++){
+      for(let j = 0;j<attributes?.length;j++){
+        if(productTermValues[i]?.ProductTermValue_termId == attributes[j]?.id ){
+          if(productTermValues[i]?.term_type == 'multiple-choice'){
+            attributes[j].selected = productTermValues[i].attributeValue
+            productTermValuesF(productTermValues[i]?.attributeValue?.split(","),productTermValues[i].ProductTermValue_termId,productTermValues[i].ProductTermValue_termTitle)
+            break;
+          }else{
+            attributes[j].selected = productTermValues[i].ProductTermValue_termValue
+            productTermValuesF(productTermValues[i].ProductTermValue_termValue,productTermValues[i].ProductTermValue_termId,productTermValues[i].ProductTermValue_termTitle)
+            break;
+          }
+         }
+        }
+      }
+      cnt++;
+    }
      
 
 
@@ -169,34 +172,34 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
                     </>
                      {item?.type == 'single-choice'?                      
                       <View  style={{borderWidth:1,borderColor:'#1234'}}>
+                          
                           <Controller 
                           
-                            key={index}
-                            control={control}
-                            render={({ onChange, onBlur, value }) => (
-                            <Picker
-                               selectedValue={value}
-                               onValueChange={(value, itemIndex) => {productTermValuesF(value,item?.id,item?.title), onChange(value)}}  
-                              //  value={value.toString()}    
-                            >
-                          
-                              <Picker.Item key={'unselectable'} label={'Select an Option'} value={''} />
-                              
-                               {item?.termValues?.map((values:any,index:any)=> 
-
-                               <Picker.Item  key={index} label={values?.title} value={values?.title} />                                 
-                               )}
-                              
-                            </Picker> 
-                            )} 
-                            name={item?.title}    
-                            rules={{ required: false }}
-                            //  item.required=='yes'?true:
-                            defaultValue = {item?.selected? item?.selected : ''}
-                           
-                         />  
+                          key={index}
+                          control={control}
+                          render={({ onChange, onBlur, value }) => (
+                          <Picker
+                             selectedValue={value}
+                             onValueChange={(value, itemIndex) => {productTermValuesF(value,item?.id,item?.title), onChange(value)}}  
+                            //  value={value?value?.toString():''}    
+                          >
                         
-                        {/* {errors.item?.title?.type === "required" && <Text style={{color:'red'}}>This is Required</Text>} */}
+                            <Picker.Item key={'unselectable'} label={'Select an Option'} value={''} />
+                            
+                             {item?.termValues?.map((values:any,index:any)=> 
+
+                             <Picker.Item  key={index} label={values?.title} value={values?.title} />                                 
+                             )}
+                            
+                          </Picker> 
+                          )} 
+                          name={item?.title}    
+                          rules={{ required: false }}
+                          //  item.required=='yes'?true:
+                          defaultValue = {item?.selected? item?.selected : ''}
+                         
+                       />  
+                           
                       </View>
                       
                       : null}
@@ -215,34 +218,6 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
                     </>
                     <>
                       {item?.type == 'multiple-choice'?
-
-                  //     <ScrollView>
-                        
-                  //     <MultiSelect
-                  //     // hideTags
-              
-                  //     items={item?.termValues}
-                  //     uniqueKey='id'
-                  //     ref={(component) => component }
-                  //     onSelectedItemsChange={onSelectedItemsChange} 
-                  //     selectedItems={selectedItems}
-                  //     selectText="Pick Items"
-                  //     searchInputPlaceholderText="Search Items..."
-                  //     onChangeInput={()=>console.log("callled")}
-                  //     tagRemoveIconColor="red"
-                  //     tagBorderColor="red"
-                  //     tagTextColor="red"
-                  //     selectedItemTextColor="red"
-                  //     selectedItemIconColor="red"
-                  //     itemTextColor="red"
-                  //     displayKey='title'
-                  //     searchInputStyle={{ color: 'red' }}
-                  //     submitButtonColor="red"
-                  //     submitButtonText="Submit"
-
-                  //   />
-                  //  </ScrollView>
-
                         <View>
                           <View>
                                <Text style={styles.multiText}onPress={()=> openMultiSelect(item?.id)}>
@@ -250,7 +225,7 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
                                      <View key={index}>     
                                         {item?.id == items?.id?
                                           <View style={{flexDirection:'row'}} key={index}>
-                                              {items?.productTermValue?.map((selected,index)=>
+                                              {items?.value?.map((selected,index)=>
                                               <Text key={index} style={{color:'black'}}>{selected}  </Text>
                                                 )}
                                           </View>
@@ -302,7 +277,7 @@ export default function ProductAttributes({productTermValues,selectedCategoryId,
     </View>
 </View>
  </ScrollView>
-              <TouchableOpacity onPress={handleSubmit(submitAttributes)}>
+              <TouchableOpacity onPress={()=>submitAttributes()}>
                 <View style={{paddingVertical:10,paddingHorizontal:20,backgroundColor:'green',alignItems:'center'}}>
                     <Text style={{color:'white',fontWeight:'bold'}}>Submit</Text>
                 </View>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet,View,Text,ScrollView,RefreshControl,TouchableOpacity  } from 'react-native';
+import {StyleSheet,View,Text,ScrollView,RefreshControl,TouchableOpacity,ActivityIndicator  } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
@@ -12,6 +12,8 @@ import { useIsFocused } from "@react-navigation/native";
 import Header from '../components/Header';
 import Table from '../components/ProductList';
 
+
+import ProductService from '../services/ProductService';
 const deviceWidth =Math.floor(Dimensions.get('window').width)
 
 
@@ -24,26 +26,28 @@ const ViewProduct = () =>{
  
   const [refreshing, setrefreshing] = useState(false)
   const [userProducts, setuserProducts] = useState()
-  const [openTable, setopenTable] = useState()
-  const [selectedItems, setselectedItems] = useState([])
+  const [loading, setloading] = useState(true)
 
-     // pull refresh  function
-  function wait (time:any){
-    return new Promise(resolve =>{
-      setTimeout(resolve,time)
-    })
-  }
-  const refresh = React.useCallback (()=>{
-    setrefreshing(true)
-    wait(1000).then(()=>{
-      setrefreshing(false)
-      
-    })
-  },[refreshing])
+
+  useEffect(() => {
+    const getProductList = async ()=>{
+      try {
+      let res  = await ProductService.ProductList()
+      setuserProducts(res?.data)
+      setloading(false)
+        
+      } catch (error) {
+        console.log('err',error);
+        setloading(false)
+      }
+    }
+    getProductList()
+  }, [refreshing,isFocused])
+  
 
     
     return  (
-      <View >
+      <View style={{flex:1}}>
           <Header/>
             <View style={styles.container}> 
                 <View style={{flexDirection:'row'}}>
@@ -54,7 +58,7 @@ const ViewProduct = () =>{
                       <Ionicons 
                         style={{fontSize:20,color:'white'}} name="ios-add-circle-outline">
                       </Ionicons>
-                      <Text onPress={()=> navigation.navigate('AddProducts')}  style={{fontSize:12,color:'white',marginTop:2}}>Add New</Text>
+                      <Text onPress={()=> navigation.navigate('AddProducts',{id:''})}  style={{fontSize:12,color:'white',marginTop:2}}>Add New</Text>
                     </View>
                   </TouchableOpacity> 
             </View>
@@ -70,13 +74,27 @@ const ViewProduct = () =>{
                         <Text style={{fontSize:15,fontWeight:'bold'}}>Info</Text>
                     </View>
                 </View>
-            {/* <ScrollView style={{marginBottom:350}} refreshControl={ <RefreshControl  refreshing={refreshing} onRefresh={refresh}/>}> */}
-               
-                    <View>
-                        <Table userProducts={userProducts} setrefreshing={setrefreshing}/>
-                    </View>
-                    
-              {/* </ScrollView> */}
+              {/* <ScrollView style={{height:'90%'}} refreshControl={ <RefreshControl  refreshing={refreshing} onRefresh={refresh}/>}> */}
+               <View>
+
+                {userProducts?.length>0?
+                  
+                  <Table userProducts={userProducts} setrefreshing={setrefreshing} refreshing={refreshing}/>
+
+                  :
+                <>
+                {loading?
+                  <View style={{ marginTop: deviceWidth / 2 + 50 }}>
+                  <ActivityIndicator size="large" color="#e01221" />
+                  </View>
+                  :
+                  <View style={{ marginTop: deviceWidth / 2 + 50,alignItems:'center' }}>
+                    <Text style={{fontWeight:'bold',fontSize:18}}>No Items Found</Text>
+                  </View>
+                }
+                </>
+              }
+               </View>
            </View>
         </View>
 

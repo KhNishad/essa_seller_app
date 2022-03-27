@@ -45,6 +45,8 @@ const ViewProduct = () => {
   const [birthImg, setbirthImg] = useState('')
   const [tinImg, settinImg] = useState('')
   const [profileImg, setprofileImg] = useState('')
+  const [sellerId, setsellerId] = useState('')
+  // const [first, setfirst] = useState(second)
 
   // data from back
   const [zones, setzones] = useState<any>([])
@@ -52,51 +54,7 @@ const ViewProduct = () => {
   const [teritories, setteritories] = useState<any>([])
 
 
-  //   image upload
-// const pickImage = async () => {
-//   // No permissions request is necessary for launching the image library
-//   let result = await ImagePicker.launchImageLibraryAsync({
-//     mediaTypes: ImagePicker.MediaTypeOptions.All,
-//     allowsEditing: false,
-//     aspect: [4, 3],
-//     quality: 1,
-//   });
 
-
-//   if (!result.cancelled) {
-
-//     let formdata = new FormData();
-//   //   formdata.append('file', {
-//   //     uri: result.uri ,
-//   //     type: `image/${result.uri.split('.').pop()}`, 
-//   //     name: result.uri.split('/').pop()
-
-//   // })
-
-//   const file = {
-//       name :  result.uri.split('/').pop(),
-//       uri :  result.uri ,
-//       mimetype : `image/${result.uri.split('.').pop()}`, 
-//   }
-//   formdata.append('file',file)
-     
-//      ProductService.ImageUpload(formdata).then(res=>{
-//       console.log('..............res',res);
-
-//       if(res.hasOwnProperty("error") && res.error != ""){
-//         Alert.alert(
-//           "Image upload failed!",
-//           "Image size too large, maximum allowed image size 5MB",
-//           [{ text: "OK", onPress: () => {} }],
-//           { cancelable: false }
-//         );
-//       }else{
-//          console.log('..............res',res);
-//       }
-//     }).catch(err=>{
-//       console.log('err',err);
-//     })
-//   }
   
 
   // image upload
@@ -137,10 +95,6 @@ const ViewProduct = () => {
     }
   }
 
-
-
-
-// };
 
 // get address zone 
 
@@ -193,6 +147,37 @@ useEffect(() => {
  }, [selectedRegion])
 
 
+
+useEffect(() => {
+   const getProfile = async()=>{
+     try {
+     let res =  await   AddressService.getSellerProfile()
+     
+     setfullname(res?.data?.name)
+     setemail(res?.data?.email)
+     setphone(res?.data?.phone)
+     setwhatsapp(res?.data?.socialMedia?.whatsapp?.number)
+     setfacebook(res?.data?.socialMedia?.facebook?.url)
+     setNid(res?.data?.documents?.nid?.number)
+     settin(res?.data?.documents?.tin?.number)
+     setpassport(res?.data?.documents?.passport?.number)
+     setbirthCertificate(res?.data?.documents?.birthCertificate?.number)
+     setselectedZone(res?.data?.address?.zone?.id)
+     setselectedRegion(res?.data?.address?.region?.id)
+     setselectedTeritory(res?.data?.address?.tarrritory?.id)
+     setsellerId(res?.data?.id)
+    //  console.log('..........profile',res?.data);
+     
+
+
+     } catch (error) {
+       
+     }
+   }
+   getProfile()
+}, [isFocused])
+
+     console.log('profile.............',selectedRegion,selectedTeritory,selectedZone);
 
 
 const submit = async()=>{
@@ -251,6 +236,14 @@ const submit = async()=>{
     }
   }
   console.log('====================================payload',data);
+
+  try {
+    let res  = await AddressService.updateSellerProfile(sellerId)
+    console.log('====================================ress',res);
+
+  } catch (error) {
+    
+  }
   
 }
 
@@ -274,8 +267,8 @@ const submit = async()=>{
 
 
             </View>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}> Mithu Korim</Text>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}> Dhaka</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{fullname}</Text>
+            <Text style={{ fontSize: 14, fontWeight: 'bold' }}> {email}</Text>
           </View>
           <View style={{ marginHorizontal: 15,backgroundColor:'#fff' }}>
             <View >
@@ -338,7 +331,7 @@ const submit = async()=>{
              </View>
           
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+                <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
           </View>
@@ -357,7 +350,7 @@ const submit = async()=>{
              </View>
           
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+                <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
           </View>
@@ -375,7 +368,7 @@ const submit = async()=>{
                 <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${birthImg}` }}></Image>
              </View>
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+                <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
           </View>
@@ -394,7 +387,7 @@ const submit = async()=>{
              </View>
             
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
+                <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
           </View>
@@ -409,7 +402,7 @@ const submit = async()=>{
                 onValueChange={(itemValue, itemIndex) =>  setselectedZone(itemValue)}
                 
               >
-                <Picker.Item  label='Select Zone' value={'unselctable'} />
+                {/* <Picker.Item  label='Select Zone' value={'unselctable'} /> */}
                 {zones?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -428,7 +421,7 @@ const submit = async()=>{
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setselectedRegion(itemValue)}
               >
-                 <Picker.Item  label='Select Region' value={'unselctable'} />
+                 {/* <Picker.Item  label='Select Region' value={'unselctable'} /> */}
                 {regions?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -448,7 +441,7 @@ const submit = async()=>{
                 
                 onValueChange={(itemValue, itemIndex) => setselectedTeritory(itemValue)}
               >
-                <Picker.Item  label='Select Territory' value={'unselctable'} />
+                {/* <Picker.Item  label='Select Territory' value={'unselctable'} /> */}
 
                  {teritories?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />

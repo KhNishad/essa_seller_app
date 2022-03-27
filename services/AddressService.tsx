@@ -17,8 +17,23 @@ async function getRegionByZone(id:any) {
     return data;
   } 
 
+  async function getSellerProfile() {
+  
+    const data = await request(`/seller/info`)
+    return data;
+  }
 
-export default {getZone,getRegionByZone,getTeritoryByregion}
+  async function updateSellerProfile(id:any) {
+  console.log(',..........seller',id);
+  
+    const data = await request(`/seller/${id}`,{method:'PUT'})
+    return data;
+  }
+
+  
+
+
+export default {getZone,getRegionByZone,getTeritoryByregion,getSellerProfile,updateSellerProfile}
 
 
 

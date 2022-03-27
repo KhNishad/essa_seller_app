@@ -30,11 +30,9 @@ export default function App() {
  useEffect(() => {
 
   SecureStore.getItemAsync('accessToken').then(res =>{
-    console.log('====================================calll',res);
 
     if(res){
       setToken(res)
-      console.log('====================================',res);
       
     }else{
       setToken('noToken')

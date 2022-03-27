@@ -14,7 +14,7 @@ const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 
-export default function categoryModal({setopenModal,setselectedCategoryId,setselectedCategoryTitle,setparentCategoryId}:any) {
+export default function categoryModal({setopenModal,parentCategoryId,setselectedCategoryId,setselectedCategoryTitle,setparentCategoryId}:any) {
   // const { register, handleSubmit, setValue } = useForm();
     const [allCategory, setallCategory] = useState<any>([])
     const [productStatus, setproductStatus] = useState('')
@@ -31,13 +31,14 @@ export default function categoryModal({setopenModal,setselectedCategoryId,setsel
 //   get all categories
       useEffect(() => {
           // get seller products
+          console.log("...............cats");
+
           categoryService.getAllCategories().then(data=>{
             
              setallCategory(data?.data)
-            //  console.log("...............cats",data);
     
         }).catch(err=>console.log(err));
-        }, [1])
+        }, [])
 
 
 
@@ -48,15 +49,15 @@ export default function categoryModal({setopenModal,setselectedCategoryId,setsel
 
     const SelectparentCat = (id:any,title:any,child:any)=>{
       setparentCatId(id)
-      setparentCategoryId(id)
+      let cat = []
+      cat.push(id)
+      setparentCategoryId(cat)
     if(showSubCat === id){
       setshowSubCat(false)
-      // setArrow('right')
       setarrowIcon(false)
       
   }else{
       setshowSubCat(id)
-      // setArrow('down')
       setarrowIcon(true)
   }
   if(!child){
@@ -72,8 +73,9 @@ export default function categoryModal({setopenModal,setselectedCategoryId,setsel
     const SelectSubCat = (id:any,title:any,child:any)=>{
     setsubCatId(id)
 
-    // console.log("SUb Cat........",title,id);
-
+    let cat = parentCategoryId
+    cat.push(id)
+    setparentCategoryId(cat)
     if(showSubSubCat == id){
       setshowSubSubCat(false)
       setshowsubCatIcon(false)
@@ -92,7 +94,12 @@ export default function categoryModal({setopenModal,setselectedCategoryId,setsel
 
 //  select sub sub cat 
     const selectsubsubcat = (id:any,title:any)=>{
-      //  console.log("sub sub cat........",title,id);
+      let cat = parentCategoryId
+      cat.push(id)
+       setparentCategoryId(cat)
+
+       console.log('...........',cat);
+       
        setselectedCategoryId(id)
        setselectedCategoryTitle(title)
        setopenModal(false)

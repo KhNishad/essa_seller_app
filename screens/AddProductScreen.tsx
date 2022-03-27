@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Dimensions, Button,Image,TouchableOpacity } from 'react-native';
-import { FontAwesome5,Ionicons,Entypo } from '@expo/vector-icons';
+import { FontAwesome5,Ionicons,Entypo, AntDesign } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
@@ -8,6 +8,8 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import { NavigationRouteContext, useNavigation,useRoute } from '@react-navigation/native';
 
 const deviceWidth = Dimensions.get('window').width
 
@@ -17,6 +19,8 @@ import AttrbuteMOdal from '../components/productAttributesModal'
 // service 
 import brandService from '../services/brandService';
 import categoryServices from '../services/categoryServices';
+import ProductAttributes from '../components/productAttributesModal';
+import ProductService from '../services/ProductService';
 
 export default function App() {
 
@@ -42,52 +46,51 @@ export default function App() {
   const [delTimeOut, setdelTimeOut] = useState('')
   const [selectedBrand, setselectedBrand] = useState('')
   const [attributeModal, setattributeModal] = useState(false);
+  const [isNegotiable, setisNegotiable] = useState(false)
+  const [productDetails, setproductDetails] = useState({})
 
   // category info
   const [selectedCategoryId, setselectedCategoryId] = useState(null);
   const [selectedCategoryTitle, setselectedCategoryTitle] = useState("");
-  const [parentCategoryId, setparentCategoryId] = useState(null);
+  const [parentCategoryId, setparentCategoryId] = useState([]);
   const [AtributesData, setAtributesData] = useState([]);
 
+  const route = useRoute();
 
-  const createProduct = () => {
+  const { id } = route.params;
+  const navigation = useNavigation(); 
+
+  
+ 
+
+  const createProduct = async (value:any) => {
+    
     const data = {
       title: productName,
       description:description,
       images: Imagee,
-      // "attachments": [
-      //   {
-      //     "url": "string"
-      //   }
-      // ],
+      attachments: [],
       deliveryInfo: {
-        estDlvrTimeIn: delTimeIn,
-        estDlvrTimeOut: delTimeOut,
-        delChargIn: insideCity,
-        delChargOut: outSideCity,
-        maxOrderLimit: orderLimit
+        estDlvrTimeIn: '',
+        estDlvrTimeOut: '',
+        delChargIn: '',
+        delChargOut: '',
+        maxOrderLimit:''
       },
-      categories: [
-        selectedCategoryId
-      ],
+      categories: parentCategoryId,
       brandId: selectedBrand,
-      // "attributes": [
-      //   {
-      //     "id": 0,
-      //     "value": [
-      //       "string"
-      //     ]
-      //   }
-      // ],
+      attributes: AtributesData,
+      activeStatus: value,
       variations: [
         {
           sku: sku,
-          regularPrice: price,
-          salePrice: salePrice,
-          // "isNagotiable": true,
+          regularPrice: Number(price) ,
+          salePrice: Number(salePrice),
+          isNagotiable: isNegotiable,
           discountType: selectedValue,
-          discountAmount: amount,
-          quantity:quantity,
+          discountAmount: Number(amount),
+          quantity: Number(quantity),
+          
           // "images": [
           //   {
           //     "url": "string",
@@ -102,6 +105,39 @@ export default function App() {
       ]
     }
     console.log('........................,',data)
+    if(value == 5){
+      try {
+        let res = await ProductService.productUpdate(id,data)
+        showMessage({
+          message: `${res.message}`,
+          type: "success",
+        });
+          
+        } catch (error) {
+          showMessage({
+            message: `${error.message}`,
+            type: "danger",
+          });
+    
+        }
+    }else{
+      try {
+        let res = await ProductService.ProductUp(data)
+        navigation.navigate('Products')
+        showMessage({
+          message: `${res.message}`,
+          type: "success",
+        });
+          
+        } catch (error) {
+          showMessage({
+            message: `${error.message}`,
+            type: "success",
+          });
+    
+        }
+    }
+
   }
 
   //   image upload
@@ -131,8 +167,42 @@ export default function App() {
   };
 
   
-  
 
+  useEffect(() => {
+    const getProductDetails =async ()=>{
+      try {
+       let res  = await ProductService.ProductDetails(id)
+       console.log('res.................',res);
+       
+        if(res){
+          setproductDetails(res?.data)
+          setproductName(res?.data?.title)
+          setselectedBrand(res?.data?.brand?.id)
+          setdescription(res?.data?.description)
+          setprice(res?.data?.variations[0]?.regularPrice)
+          setSelectedValue(res?.data?.variations[0]?.discountType)
+          setamount(res?.data?.variations[0]?.discountAmount)
+          setsalePrice(res?.data?.variations[0]?.salePrice)
+          setsku(res?.data?.variations[0]?.SKU)
+          setquantity(res?.data?.variations[0]?.quantity)
+          setisNegotiable(res?.data?.variations[0]?.isNagotiable)
+          setorderLimit(res?.data?.deliveryInfo?.maxOrderQty)
+          setselectedCategoryTitle(res?.data?.category?.title)
+          setselectedCategoryId(res?.data?.category?.id)
+          setparentCategoryId(res?.data?.categories)
+
+          
+        }
+        
+      } catch (error) {
+        
+      }
+
+    }
+    getProductDetails()
+   
+  }, [id])
+  
   // get all brand
   useEffect(() => {
     const getBrands = async()=>{
@@ -141,6 +211,7 @@ export default function App() {
         setbrandList(res?.data)        
 
       } catch (error) {
+        console.log('err in brand',error);
         
       }
 
@@ -261,7 +332,7 @@ export default function App() {
             />
 
           </View>
-          <View >
+          {/* <View >
             <Text style={styles.labelText}>Stock</Text>
             <TextInput
               style={styles.input}
@@ -269,7 +340,7 @@ export default function App() {
               placeholder="Quantity"
               value={stock}
             />
-          </View>
+          </View> */}
           <View>
 
           </View>
@@ -293,7 +364,7 @@ export default function App() {
               style={styles.input}
               onChangeText={setprice}
               placeholder="$ Price"
-              value={price}
+              value={price?price.toString():''}
             />
           </View>
           <View >
@@ -302,7 +373,6 @@ export default function App() {
               <Picker
                 selectedValue={selectedValue}
                 style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
-                // itemStyle={{paddingBottom:20}}
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
               >
@@ -319,12 +389,12 @@ export default function App() {
               style={styles.input}
               onChangeText={setamount}
               placeholder="$ Amount"
-              value={amount}
+              value={amount.toString()}
               onBlur={()=>{
                 if(selectedValue == 'fixed'){
                   setsalePrice(price-amount)
                 }else{
-                  setsalePrice((price*amount)/100)
+                  setsalePrice((price-(price*amount)/100))
                 }
               }}
 
@@ -345,7 +415,7 @@ export default function App() {
               style={styles.input}
               onChangeText={setsku}
               placeholder=" SKU"
-              value={sku}
+              value={sku?sku.toString():''}
 
             />
           </View>
@@ -355,50 +425,44 @@ export default function App() {
               style={styles.input}
               onChangeText={setquantity}
               placeholder="$ Quantity"
-              value={quantity}
+              value={quantity?quantity.toString():''}
 
             />
           </View>
-          <View >
+          {/* <View >
             
             <Text style={styles.labelText}>Delevery Time(In City)</Text>
-            {/* <TextInput
-              style={styles.input}
-              onChangeText={setdelTimeIn}
-              placeholder="selected Delevery Time(In City)"
-              value={delTimeIn}
-
-            /> */}
+          
             <View style={styles.navPicker}>
-             <Picker
-                selectedValue={delTimeIn}
-                style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
-                // itemStyle={{paddingBottom:20}}
-                mode="dropdown"
-                onValueChange={(itemValue, itemIndex) => setdelTimeIn(itemValue)}
-              >
-                    <Picker.Item  label='1 hour' value={'1'} />
-                    <Picker.Item  label='2 hour' value={'2'} />
-                    <Picker.Item  label='3 hour' value={'3'} />
-                    <Picker.Item  label='4 hour' value={'4'} />
-                    <Picker.Item  label='5 hour' value={'5'} />
-                    <Picker.Item  label='6 hour' value={'6'} />
-                    <Picker.Item  label='7 hour' value={'7'} />
-                    <Picker.Item  label='8 hour' value={'8'} />
-                
-
-              </Picker>
-              </View>
+              <Picker
+                  selectedValue={delTimeIn}
+                  style={{ height: 50, alignItems: 'center', justifyContent: 'center' }}
+                  // itemStyle={{paddingBottom:20}}
+                  mode="dropdown"
+                  onValueChange={(itemValue, itemIndex) => setdelTimeIn(itemValue)}
+                >
+                      <Picker.Item  label='1. 1-3 hrs' value={'1|1-3 hrs'} />
+                      <Picker.Item  label='2. 1-24 hrs' value={'2|1-24 hrs'} />
+                      <Picker.Item  label='3. 1-2 days' value={'3|1-2 days'} />
+                      <Picker.Item  label='4. 1-3 days' value={'4|1-3 days'} />
+                      <Picker.Item  label='5. 1-5 days' value={'5|1-5 days'} />
+                      <Picker.Item  label='6. 1-7 days' value={'6|1-7 days'} />
+                      <Picker.Item  label='7. 1-10 days' value={'7|1-10 days'} />
+                      <Picker.Item  label='8. 7-15 days' value={'8|7-15 days'} />
+                      <Picker.Item  label='9. 7-21 days' value={'9|7-21 days'} />
+                      <Picker.Item  label='10. 15-21 days' value={'10|15-21 days'} />
+                      <Picker.Item  label='11. 15-30 days' value={'11|15-30 days'} />
+                      <Picker.Item  label='12. 21-30 days' value={'12|21-30 days'} />
+                      <Picker.Item  label='13. 21-45 days' value={'13|21-45 days'} />
+                      <Picker.Item  label='14. 30-45 days' value={'14|30-45 days'} />
+                      <Picker.Item  label='15. 45-60 days' value={'15|45-60 days'} />
+                      <Picker.Item  label='16. 60-90 days' value={'16|60-90 days'} />
+                </Picker>
+            </View>
           </View>
           <View >
             <Text style={styles.labelText}>Delevery Time(Out City)</Text>
-            {/* <TextInput
-              style={styles.input}
-              onChangeText={setdelTimeOut}
-              placeholder="selected Delevery Time(Out City)"
-              value={delTimeOut}
-
-            /> */}
+            
              <View style={styles.navPicker}>
              <Picker
                 selectedValue={delTimeOut}
@@ -407,14 +471,22 @@ export default function App() {
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setdelTimeOut(itemValue)}
               >
-                    <Picker.Item  label='1 hour' value={'1'} />
-                    <Picker.Item  label='2 hour' value={'2'} />
-                    <Picker.Item  label='3 hour' value={'3'} />
-                    <Picker.Item  label='4 hour' value={'4'} />
-                    <Picker.Item  label='5 hour' value={'5'} />
-                    <Picker.Item  label='6 hour' value={'6'} />
-                    <Picker.Item  label='7 hour' value={'7'} />
-                    <Picker.Item  label='8 hour' value={'8'} />
+                    <Picker.Item  label='1. 1-3 hrs' value={'1|1-3 hrs'} />
+                    <Picker.Item  label='2. 1-24 hrs' value={'2|1-24 hrs'} />
+                    <Picker.Item  label='3. 1-2 days' value={'3|1-2 days'} />
+                    <Picker.Item  label='4. 1-3 days' value={'4|1-3 days'} />
+                    <Picker.Item  label='5. 1-5 days' value={'5|1-5 days'} />
+                    <Picker.Item  label='6. 1-7 days' value={'6|1-7 days'} />
+                    <Picker.Item  label='7. 1-10 days' value={'7|1-10 days'} />
+                    <Picker.Item  label='8. 7-15 days' value={'8|7-15 days'} />
+                    <Picker.Item  label='9. 7-21 days' value={'9|7-21 days'} />
+                    <Picker.Item  label='10. 15-21 days' value={'10|15-21 days'} />
+                    <Picker.Item  label='11. 15-30 days' value={'11|15-30 days'} />
+                    <Picker.Item  label='12. 21-30 days' value={'12|21-30 days'} />
+                    <Picker.Item  label='13. 21-45 days' value={'13|21-45 days'} />
+                    <Picker.Item  label='14. 30-45 days' value={'14|30-45 days'} />
+                    <Picker.Item  label='15. 45-60 days' value={'15|45-60 days'} />
+                    <Picker.Item  label='16. 60-90 days' value={'16|60-90 days'} />
                 
 
               </Picker>
@@ -439,30 +511,54 @@ export default function App() {
               value={outSideCity}
 
             />
-          </View>
+          </View> */}
+
           <View >
             <Text style={styles.labelText}>Maximum Order Limit</Text>
             <TextInput
               style={styles.input}
               onChangeText={setorderLimit}
               placeholder="Limit"
-              value={orderLimit}
+              value={orderLimit?orderLimit.toString():''}
 
             />
-            <View>
-              <Text onPress={()=>setattributeModal(true)}>Add Attribute</Text>
+           
+          </View>
+          <View style={{flexDirection:'row',alignItems:'center',paddingVertical:20}}>
+            <Text style={{fontSize:18,fontWeight:'bold',marginRight:10}}>Negotiable</Text>
+            {isNegotiable?
+             <AntDesign onPress={()=>setisNegotiable(false)} name='checksquare' size={25}></AntDesign>
+             :
+             <AntDesign onPress={()=>setisNegotiable(true)}  name='checksquareo' size={25}></AntDesign>
+            }
+
+          </View>
+          <View style={{backgroundColor:'#FF9411',alignItems:'center',paddingVertical:10}}>
+            {AtributesData?.length?
+              <Text style={{color:'#fff'}} onPress={()=>setattributeModal(true)}>Attribute Added </Text>
+              :
+              <Text style={{color:'#fff'}} onPress={()=>setattributeModal(true)}>Add Attribute</Text>
+            }
+
             </View>
-          </View>
+          {Object.keys(productDetails)?.length>0 && id?
+            <View style={{flexDirection:'row',alignItems:'center',justifyContent:"space-between"}}>
+                <TouchableOpacity  onPress={()=>createProduct(5)} style={{backgroundColor:'#FF9411',alignItems:'center',paddingVertical:10,marginVertical:10,width:deviceWidth-20}}>
+                  <Text style={{color:'#fff'}}>Update</Text>
+                </TouchableOpacity>
+            </View>
+          :
+          <View style={{flexDirection:'row',alignItems:'center',justifyContent:"space-between"}}>
+              <TouchableOpacity  onPress={()=>createProduct(2)} style={{backgroundColor:'#FF9411',alignItems:'center',paddingVertical:10,marginVertical:10,width:deviceWidth/2-20}}>
+                <Text style={{color:'#fff'}}>Request for QC</Text>
+              </TouchableOpacity>
 
-          <View style={{ alignItems: 'center', marginVertical: 10 }}>
-            <Button
-              onPress={()=>createProduct()}
-              title="Add Product"
-              color="#FF9411"
-              accessibilityLabel="Learn more about this purple button"
-            />
+              <TouchableOpacity  onPress={()=>createProduct(4)} style={{backgroundColor:'#FF9411',alignItems:'center',paddingVertical:10,marginVertical:10,width:deviceWidth/2-20}}>
+                <Text style={{color:'#fff'}}>Draft</Text>
+              </TouchableOpacity>
           </View>
-
+          }
+        
         </View>
       </ScrollView>
       {openModal ? (
@@ -471,14 +567,15 @@ export default function App() {
               setparentCategoryId={setparentCategoryId}
               setselectedCategoryId={setselectedCategoryId}
               setselectedCategoryTitle={setselectedCategoryTitle}
-              // setAttribute={setAttribute}
+              parentCategoryId={parentCategoryId}
             />
           ) : null}
-          {attributeModal ? (
+          {attributeModal && selectedCategoryId ? (
                 <AttrbuteMOdal
                   setAtributesData={setAtributesData}
                   selectedCategoryId={selectedCategoryId}
                   setattributeModal={setattributeModal}
+                  productTermValues={productDetails?.attributes}
                 />
               ) : null}
 

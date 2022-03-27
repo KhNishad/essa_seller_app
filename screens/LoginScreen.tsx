@@ -33,7 +33,6 @@ export default function TabTwoScreen() {
         emailOrPhone:email,
         password: passWord
       }
-      console.log('====================================',data);
      if(data?.emailOrPhone && data?.password){
           try {
             let res = await LoginService.Login(data)
