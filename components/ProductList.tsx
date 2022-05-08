@@ -61,7 +61,7 @@ const Table = ({userProducts,setrefreshing,refreshing}:any) => {
                             </View> 
                            <View style={styles.tableColumn3}>
                                 <Text style={styles.infoText}>Sale Price:
-                                     <Text   style={{fontWeight:'bold'}}>${item?.productVariation[0]?.salePrice}</Text> 
+                                     <Text   style={{fontWeight:'bold'}}>Tk{item?.productVariation[0]?.salePrice}</Text> 
                                 </Text>
                                 <Text style={styles.infoText}>Quantity:
                                      <Text style={{fontWeight:'bold',fontSize:12}}>02</Text>

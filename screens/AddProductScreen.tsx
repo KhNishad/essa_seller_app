@@ -314,7 +314,6 @@ export default function App() {
                 {brandList?.length>0 && brandList?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
-                
 
               </Picker>
             </View>
@@ -363,7 +362,7 @@ export default function App() {
             <TextInput
               style={styles.input}
               onChangeText={setprice}
-              placeholder="$ Price"
+              placeholder="Tk Price"
               value={price?price.toString():''}
             />
           </View>
@@ -388,7 +387,7 @@ export default function App() {
             <TextInput
               style={styles.input}
               onChangeText={setamount}
-              placeholder="$ Amount"
+              placeholder=" Amount"
               value={amount.toString()}
               onBlur={()=>{
                 if(selectedValue == 'fixed'){
@@ -404,7 +403,7 @@ export default function App() {
             <Text style={styles.labelText}>Sale Price</Text>
             <TextInput
               style={styles.input}
-              placeholder="$ Sale Price"
+              placeholder=" Sale Price"
               value={salePrice.toString()}
               editable={false}
             />
@@ -424,7 +423,7 @@ export default function App() {
             <TextInput
               style={styles.input}
               onChangeText={setquantity}
-              placeholder="$ Quantity"
+              placeholder=" Quantity"
               value={quantity?quantity.toString():''}
 
             />

@@ -105,6 +105,8 @@ useEffect(() => {
    let res = await AddressService.getZone()
      if(res){
       setzones(res?.data)
+     console.log('zone.............',res);
+
      }
      
    } catch (error) {
@@ -152,7 +154,8 @@ useEffect(() => {
    const getProfile = async()=>{
      try {
      let res =  await   AddressService.getSellerProfile()
-     
+
+
      setfullname(res?.data?.name)
      setemail(res?.data?.email)
      setphone(res?.data?.phone)
@@ -166,9 +169,6 @@ useEffect(() => {
      setselectedRegion(res?.data?.address?.region?.id)
      setselectedTeritory(res?.data?.address?.tarrritory?.id)
      setsellerId(res?.data?.id)
-    //  console.log('..........profile',res?.data);
-     
-
 
      } catch (error) {
        
@@ -177,7 +177,6 @@ useEffect(() => {
    getProfile()
 }, [isFocused])
 
-     console.log('profile.............',selectedRegion,selectedTeritory,selectedZone);
 
 
 const submit = async()=>{
@@ -235,10 +234,10 @@ const submit = async()=>{
       more: "string"
     }
   }
-  console.log('====================================payload',data);
+  // console.log('====================================payload',data);
 
   try {
-    let res  = await AddressService.updateSellerProfile(sellerId)
+    let res  = await AddressService.updateSellerProfile(sellerId,data)
     console.log('====================================ress',res);
 
   } catch (error) {
@@ -402,7 +401,7 @@ const submit = async()=>{
                 onValueChange={(itemValue, itemIndex) =>  setselectedZone(itemValue)}
                 
               >
-                {/* <Picker.Item  label='Select Zone' value={'unselctable'} /> */}
+                <Picker.Item  label='Select Zone' value={'unselctable'} />
                 {zones?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -421,7 +420,7 @@ const submit = async()=>{
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setselectedRegion(itemValue)}
               >
-                 {/* <Picker.Item  label='Select Region' value={'unselctable'} /> */}
+                 <Picker.Item  label='Select Region' value={'unselctable'} />
                 {regions?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -441,7 +440,7 @@ const submit = async()=>{
                 
                 onValueChange={(itemValue, itemIndex) => setselectedTeritory(itemValue)}
               >
-                {/* <Picker.Item  label='Select Territory' value={'unselctable'} /> */}
+                <Picker.Item  label='Select Territory' value={'unselctable'} />
 
                  {teritories?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />

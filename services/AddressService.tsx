@@ -23,11 +23,11 @@ async function getRegionByZone(id:any) {
     return data;
   }
 
-  async function updateSellerProfile(id:any) {
-  console.log(',..........seller',id);
-  
-    const data = await request(`/seller/${id}`,{method:'PUT'})
-    return data;
+  async function updateSellerProfile(id,data) {
+    console.log('.......caled');
+    
+    const res = await request(`/seller/${id}`,{method:'PUT',data:data})
+    return res;
   }
 
   
