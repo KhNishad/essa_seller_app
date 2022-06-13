@@ -67,16 +67,20 @@ const ViewProduct = () => {
       aspect: [4, 3],
       quality: 1,
     });
+
       console.log('............result',result);
       
     if (!result.cancelled) {
+
       let formdata = new FormData();
       formdata.append('file', {
         uri: result.uri ,
         type: `image/${result.uri.split('.').pop()}`, 
         name: result.uri.split('/').pop()
-
-    })
+       })
+       
+      console.log('.................fromdata',formdata);
+      
        ProductService.ImageUpload(formdata).then(res=>{
         if(res.hasOwnProperty("error") && res.error != ""){
           Alert.alert(
@@ -91,7 +95,8 @@ const ViewProduct = () => {
          
         }
         // CheckImg = res 
-      })
+      }).catch(err=>{console.log('err in img up',err)})
+      
     }
   }
 
@@ -234,7 +239,7 @@ const submit = async()=>{
       more: "string"
     }
   }
-  // console.log('====================================payload',data);
+  console.log('====================================payload',data);
 
   try {
     let res  = await AddressService.updateSellerProfile(sellerId,data)
@@ -259,9 +264,9 @@ const submit = async()=>{
           </View>
           <View style={styles.uploadimage}>
             <View>
-              <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
+              {/* <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
 
-              </Image>
+              </Image> */}
               <FontAwesome5 onPress={()=>reviewImg()} color='#FF9411' style={styles.cam} name='camera'></FontAwesome5>
 
 

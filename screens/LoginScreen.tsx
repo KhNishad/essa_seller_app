@@ -14,12 +14,13 @@ const deviceHeight = Dimensions.get('window').height
 
 // service 
 import LoginService from '../services/LoginService';
+import React from 'react';
 
 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
 export default function TabTwoScreen() {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
 
 
     const [email, setemail] = useState('')
@@ -30,13 +31,14 @@ export default function TabTwoScreen() {
     const LoginSubmit = async ()=>{
       setloading(true)
       const data  = {
-        emailOrPhone:email,
+        emailOrPhone:email.toString(),
         password: passWord
       }
+            console.log('====================================res',data);
+
      if(data?.emailOrPhone && data?.password){
           try {
             let res = await LoginService.Login(data)
-            // console.log('====================================res',res?.message);
 
             if(res?.statusCode == 200){
               setloading(false)
