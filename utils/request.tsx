@@ -51,8 +51,8 @@ const request = async (link, params={}, noPrefix = null, header = null) => {
 
     net: Boolean 
     let headers = {
-        // "Content-Type": "application/json",
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "application/json",
+        // 'Content-Type': 'multipart/form-data',
     };
     
     const token = await SecureStore.getItemAsync('accessToken')

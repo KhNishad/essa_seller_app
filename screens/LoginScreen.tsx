@@ -31,15 +31,14 @@ export default function TabTwoScreen() {
     const LoginSubmit = async ()=>{
       setloading(true)
       const data  = {
-        emailOrPhone:email.toString(),
+        emailOrPhone:email,
         password: passWord
       }
-            console.log('====================================res',data);
 
      if(data?.emailOrPhone && data?.password){
           try {
-            let res = await LoginService.Login(data)
-
+            const res = await LoginService.Login(data)
+              
             if(res?.statusCode == 200){
               setloading(false)
 
@@ -53,6 +52,7 @@ export default function TabTwoScreen() {
            
 
           } catch (error) {
+            
             setloading(false)
             showMessage({
               message: `${error.message}`,

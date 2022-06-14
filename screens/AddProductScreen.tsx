@@ -12,6 +12,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { NavigationRouteContext, useNavigation,useRoute } from '@react-navigation/native';
 
 const deviceWidth = Dimensions.get('window').width
+const apiImagepath = "http://103.119.71.9:4400/media";
 
 import Modal from '../components/categoryModal'
 import AttrbuteMOdal from '../components/productAttributesModal'
@@ -55,6 +56,9 @@ export default function App() {
   const [parentCategoryId, setparentCategoryId] = useState([]);
   const [AtributesData, setAtributesData] = useState([]);
 
+
+  const [loader, setloader] = useState(false)
+
   const route = useRoute();
 
   const { id } = route.params;
@@ -81,9 +85,10 @@ export default function App() {
       brandId: selectedBrand,
       attributes: AtributesData,
       activeStatus: value,
+      id:id,
       variations: [
         {
-          sku: sku,
+          SKU: sku,
           regularPrice: Number(price) ,
           salePrice: Number(salePrice),
           isNagotiable: isNegotiable,
@@ -104,7 +109,6 @@ export default function App() {
         }
       ]
     }
-    console.log('........................,',data)
     if(value == 5){
       try {
         let res = await ProductService.productUpdate(id,data)
@@ -146,20 +150,33 @@ export default function App() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
-      // base64:true,
+      base64:true,
       aspect: [4, 3],
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
      let img = Imagee
     if (!result.cancelled) {
-      img.push(result.uri)
-      setImagee(img)
-      setrenderMe(!renderMe)
-      // setImage(result.uri);
+      // console.log(".......img",result.uri);
+
+      const data  = {
+        file : `data:${`image/${result.uri.split('.').pop()}`};base64,${result.base64}`,
+        folderPath:'appImages'
+      }
+
+      try {
+      let res = await ProductService.ImageUpload(data)
+        if(res){
+          img.push(res)
+          setImagee(img)
+          setrenderMe(!renderMe)
+        }
+      } catch (error) {
+        console.log("err in img up",error);
+      }
     }
-  };
+  };        
 
   // category modal
   const openCategoryModal = () => {
@@ -346,11 +363,11 @@ export default function App() {
 
           <Text style={styles.labelText}>Add Product Image</Text>
           <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
-            {Imagee?.length>0 && Imagee?.map((item,index)=>
+           {Imagee?.length>0 && Imagee?.map((item,index)=> 
               <View key={index} style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
-                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:item }}></Image>
+                <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${item}` }}></Image>
              </View>
-            )}
+            )} 
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <FontAwesome5  onPress={() => pickImage()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>

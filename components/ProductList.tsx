@@ -7,8 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-const apiImagepath ='https://api.ebhubon.com/media/images';
-// const apiImagepath ='http://192.168.0.17:3000/media/images';
+const apiImagepath = "http://103.119.71.9:4400/media";
 const deviceWidth = Math.floor(Dimensions.get('window').width)
 
 
@@ -17,6 +16,9 @@ let Color = '';
 
 const Table = ({userProducts,setrefreshing,refreshing}:any) => {
  
+
+   console.log('.............res',userProducts[0]?.images[0]);
+   
 
        // pull refresh  function
        function wait (time:any){
@@ -50,10 +52,16 @@ const Table = ({userProducts,setrefreshing,refreshing}:any) => {
                   <Text  style={{display:'none'}}>{Color ='#F9F9FF'}</Text>
                   }
                    <TouchableOpacity onPress={()=>navigation.navigate('AddProducts',{id:item?.id})}>
-                       <View  style={[styles.listContainer,{backgroundColor:Color}]}>      
+                       <View  style={[styles.listContainer,{backgroundColor:Color}]}>   
+                            {item?.images?.length>0?   
+                              <View style={styles.tableColumn1} >
+                                <Image style={styles.productImg} source={{uri:`${apiImagepath}/${item?.images[0]}`}} /> 
+                              </View> 
+                            :
                             <View style={styles.tableColumn1} >
-                                <Image style={styles.productImg} source={require('../assets/images/smart-phone-half-block.jpg')} /> 
-                            </View> 
+                               <Image style={styles.productImg} source={require('../assets/images/essa-logo.png')} /> 
+                             </View>
+                            }
                            
                              <View style={styles.tableColumn2}>
                             
@@ -121,7 +129,7 @@ const styles = StyleSheet.create({
     height:80,
     // borderWidth:0.5,
     // borderColor:'#1234',
-    // resizeMode:'center'
+    resizeMode:'center'
   },
   listContainer:{
     flexDirection:'row',

@@ -15,6 +15,7 @@ import Table from '../components/ProductList';
 
 import ProductService from '../services/ProductService';
 const deviceWidth =Math.floor(Dimensions.get('window').width)
+const apiImagepath = "http://103.119.71.9:4400/media";
 
 
 
