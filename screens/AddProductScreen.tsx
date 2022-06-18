@@ -189,7 +189,7 @@ export default function App() {
     const getProductDetails =async ()=>{
       try {
        let res  = await ProductService.ProductDetails(id)
-       console.log('res.................',res);
+      //  console.log('res.................xx',res);
        
         if(res){
           setproductDetails(res?.data)
@@ -405,7 +405,7 @@ export default function App() {
               style={styles.input}
               onChangeText={setamount}
               placeholder=" Amount"
-              value={amount.toString()}
+              value={amount}
               onBlur={()=>{
                 if(selectedValue == 'fixed'){
                   setsalePrice(price-amount)

@@ -14,7 +14,9 @@ import LoginScreen from "./screens/LoginScreen";
 import DashboardScreen from './screens/DashboardScreen';
 import AddProducts from './screens/AddProductScreen';
 import OrderList from './screens/OrderList'
-import OrderDatail from './screens/OrderDetailScreen';
+import RequisitionDetails from './screens/requisitionDetails'
+import OrderDetails from './screens/OrderDetailsScreen'
+
 
 
 
@@ -74,8 +76,8 @@ export default function App() {
       />
 
       <Stack.Screen
-        name="OrderDatail"
-        component={OrderDatail}
+        name="OrderDetails"
+        component={OrderDetails}
         options={{ header: () => null }}
       />
 
@@ -113,8 +115,13 @@ export default function App() {
       />
 
       <Stack.Screen
-        name="OrderDatail"
-        component={OrderDatail}
+        name="OrderDetails"
+        component={OrderDetails}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="RequisitionDetails"
+        component={RequisitionDetails}
         options={{ header: () => null }}
       />
 

@@ -17,7 +17,7 @@ let Color = '';
 const Table = ({userProducts,setrefreshing,refreshing}:any) => {
  
 
-   console.log('.............res',userProducts[0]?.images[0]);
+  //  console.log('.............res',userProducts[0]?.images[0]);
    
 
        // pull refresh  function

@@ -11,6 +11,7 @@ import { useIsFocused } from "@react-navigation/native";
 // components
 import Header from '../components/Header';
 import Table from '../components/OrderList';
+import OrderServices from '../services/OrderServices';
 
 const deviceWidth =Math.floor(Dimensions.get('window').width)
 
@@ -23,7 +24,7 @@ const OrderList = () =>{
   const isFocused = useIsFocused();
  
   const [refreshing, setrefreshing] = useState(false)
-  const [userProducts, setuserProducts] = useState()
+  const [orderList, setorderList] = useState([])
   const [openTable, setopenTable] = useState()
   const [selectedItems, setselectedItems] = useState([])
 
@@ -45,6 +46,18 @@ const OrderList = () =>{
       
     })
   },[refreshing])
+
+  useEffect(() => {
+    OrderServices.getOrderList()
+      .then((res) => {
+        console.log('..................',res);
+
+        setorderList(res?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [refreshing]);
 
     
     return  (
@@ -70,7 +83,7 @@ const OrderList = () =>{
             {/* <ScrollView style={{marginBottom:350}} refreshControl={ <RefreshControl  refreshing={refreshing} onRefresh={refresh}/>}> */}
                
                     <TouchableOpacity  onPress={()=>orderDatils()}>
-                        <Table userProducts={userProducts} setrefreshing={setrefreshing}/>
+                        <Table orderList={orderList} setrefreshing={setrefreshing}/>
                     </TouchableOpacity>
                     
               {/* </ScrollView> */}

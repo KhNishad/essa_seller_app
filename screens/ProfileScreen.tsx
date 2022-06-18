@@ -13,6 +13,7 @@ import Header from '../components/Header';
 // service
 import AddressService from '../services/AddressService';
 import ProductService from '../services/ProductService';
+import { showMessage } from 'react-native-flash-message';
 
 const deviceWidth = Math.floor(Dimensions.get('window').width)
 
@@ -110,7 +111,7 @@ useEffect(() => {
    let res = await AddressService.getZone()
      if(res){
       setzones(res?.data)
-     console.log('zone.............',res);
+    //  console.log('zone.............',res);
 
      }
      
@@ -239,14 +240,20 @@ const submit = async()=>{
       more: "string"
     }
   }
-  console.log('====================================payload',data);
+  // console.log('====================================payload',data);
 
   try {
     let res  = await AddressService.updateSellerProfile(sellerId,data)
     console.log('====================================ress',res);
-
+    showMessage({
+      message: `${res.message}`,
+      type: "success",
+    });
   } catch (error) {
-    
+    showMessage({
+      message: `${res.message}`,
+      type: "success",
+    });
   }
   
 }

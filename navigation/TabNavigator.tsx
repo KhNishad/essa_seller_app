@@ -13,6 +13,8 @@ import Dashboard from '../screens/DashboardScreen';
 import ProductScreen from '../screens/ProductListScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import OrderList from '../screens/OrderList';
+import RequisitionScreen from '../screens/RequisitionScreen'
+import MyOrderList from '../screens/MyOrdersScreen'
 
 
 
@@ -73,7 +75,7 @@ export function TabNav() {
 
 
          />
-          <Tab.Screen name="OrderList" component={OrderList}
+          <Tab.Screen name="MyOrderList" component={MyOrderList}
             options={{
                tabBarLabel: "Order",
                // unmountOnBlur: true,
@@ -85,6 +87,17 @@ export function TabNav() {
 
          />
 
+         <Tab.Screen name="RequisitionScreen" component={RequisitionScreen}
+            options={{
+               tabBarLabel: "Requisition",
+               // unmountOnBlur: true,
+               header: () => null,
+
+               tabBarIcon: ({ focused, color }) =>
+                  <AntDesign name="user" size={25} color={focused ? '#BB2227' : color} />,
+            }}
+
+         />
          <Tab.Screen name="ProfileScreen" component={ProfileScreen}
             options={{
                tabBarLabel: "Profile",
