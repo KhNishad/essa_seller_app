@@ -92,7 +92,7 @@ const ViewProduct = () => {
           );
         }else{
         
-         console.log('.........res',res);
+        //  console.log('.........res',res);
          
         }
         // CheckImg = res 
@@ -161,7 +161,7 @@ useEffect(() => {
      try {
      let res =  await   AddressService.getSellerProfile()
 
-
+        console.log('=res=============',res);
      setfullname(res?.data?.name)
      setemail(res?.data?.email)
      setphone(res?.data?.phone)
@@ -270,14 +270,14 @@ const submit = async()=>{
             </View>
           </View>
           <View style={styles.uploadimage}>
-            <View>
-              {/* <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
+            {/* <View>
+              <Image style={styles.img} source={{ uri: `${apiImagepath}/${profileImg}` }}>
 
-              </Image> */}
+              </Image>
               <FontAwesome5 onPress={()=>reviewImg()} color='#FF9411' style={styles.cam} name='camera'></FontAwesome5>
 
 
-            </View>
+            </View> */}
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{fullname}</Text>
             <Text style={{ fontSize: 14, fontWeight: 'bold' }}> {email}</Text>
           </View>
@@ -286,7 +286,7 @@ const submit = async()=>{
               <Text style={styles.labelText}>Phone Number</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setphone}
+                // onChangeText={setphone}
                 placeholder="Phn No"
                 value={phone}
               />
@@ -295,7 +295,7 @@ const submit = async()=>{
               <Text style={styles.labelText}>Name</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setfullname}
+                // onChangeText={setfullname}
                 placeholder="Full Name"
                 value={fullname}
               />
@@ -304,7 +304,7 @@ const submit = async()=>{
               <Text style={styles.labelText}>Email</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setemail}
+                // onChangeText={setemail}
                 placeholder="Email"
                 value={email}
               />
@@ -313,7 +313,7 @@ const submit = async()=>{
               <Text style={styles.labelText}>Whatsapp</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setwhatsapp}
+                // onChangeText={setwhatsapp}
                 placeholder="WhatsApp Number"
                 value={whatsapp}
               />
@@ -322,7 +322,7 @@ const submit = async()=>{
               <Text style={styles.labelText}>Facebook</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setfacebook}
+                // onChangeText={setfacebook}
                 placeholder="Facebook Url"
                 value={facebook}
               />
@@ -331,12 +331,12 @@ const submit = async()=>{
               <Text style={styles.labelText}>NID</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setNid}
+                // onChangeText={setNid}
                 placeholder="NID No"
                 value={Nid}
               />
             </View>
-            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {/* <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
               <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${nidImg}` }}></Image>
              </View>
@@ -345,17 +345,17 @@ const submit = async()=>{
                 <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
-          </View>
+          </View> */}
             <View >
               <Text style={styles.labelText}>Passport</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setpassport}
+                // onChangeText={setpassport}
                 placeholder="NID No"
                 value={passport}
               />
             </View>
-            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {/* <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
               <View style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${passportImg}` }}></Image>
              </View>
@@ -364,17 +364,17 @@ const submit = async()=>{
                 <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
-          </View>
+          </View> */}
             <View >
               <Text style={styles.labelText}>Birth Certificate</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setbirthCertificate}
+                // onChangeText={setbirthCertificate}
                 placeholder="NID No"
                 value={birthCertificate}
               />
             </View>
-            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {/* <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
               <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${birthImg}` }}></Image>
              </View>
@@ -382,17 +382,17 @@ const submit = async()=>{
                 <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
-          </View>
+          </View> */}
             <View >
               <Text style={styles.labelText}>TIN</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={settin}
+                // onChangeText={settin}
                 placeholder="NID No"
                 value={tin}
               />
             </View>
-            <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
+            {/* <View style={{display:'flex',flexDirection:'row',flexWrap:'wrap',width:deviceWidth-20,alignItems:"center",paddingHorizontal:10}}>
               <View  style={{backgroundColor:'#1234',height:100,width:deviceWidth/3-25,alignItems:'center',justifyContent:'center',margin:5}}>
                 <Image style={{height:100,width:deviceWidth/3-25}} source={{ uri:`${apiImagepath}/${tinImg}` }}></Image>
              </View>
@@ -401,7 +401,7 @@ const submit = async()=>{
                 <FontAwesome5  onPress={() => reviewImg()} style={{ fontSize: 30, color:"#fff"}} name='camera'></FontAwesome5>
               </View>
 
-          </View>
+          </View> */}
           <View >
             <Text style={styles.labelText}>Adress</Text>
             <View style={[styles.navPicker,{marginBottom:10}]}>
@@ -413,7 +413,7 @@ const submit = async()=>{
                 onValueChange={(itemValue, itemIndex) =>  setselectedZone(itemValue)}
                 
               >
-                <Picker.Item  label='Select Zone' value={'unselctable'} />
+                {/* <Picker.Item  label='Select Zone' value={'unselctable'} /> */}
                 {zones?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -432,7 +432,7 @@ const submit = async()=>{
                 mode="dropdown"
                 onValueChange={(itemValue, itemIndex) => setselectedRegion(itemValue)}
               >
-                 <Picker.Item  label='Select Region' value={'unselctable'} />
+                 {/* <Picker.Item  label='Select Region' value={'unselctable'} /> */}
                 {regions?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
                 )}
@@ -452,7 +452,7 @@ const submit = async()=>{
                 
                 onValueChange={(itemValue, itemIndex) => setselectedTeritory(itemValue)}
               >
-                <Picker.Item  label='Select Territory' value={'unselctable'} />
+                {/* <Picker.Item  label='Select Territory' value={'unselctable'} /> */}
 
                  {teritories?.map((item:any,index:number)=>
                     <Picker.Item key={index} label={item?.title} value={item?.id} />
@@ -462,11 +462,11 @@ const submit = async()=>{
             </View>
 
           </View>
-            <View style={{alignItems:'center',margin:12}}>
+            {/* <View style={{alignItems:'center',margin:12}}>
                 <TouchableOpacity onPress={()=>submit()} style={styles.btn}>
                     <Text style={[styles.title,{fontSize:16}]}>Update</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
            
           </View>
         </View>

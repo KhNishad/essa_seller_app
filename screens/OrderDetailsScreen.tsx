@@ -14,7 +14,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import StepIndicator from 'react-native-step-indicator';
 
 // components
-
+import Header from '../components/Header'
 // img
 import OrderServices from "../services/OrderServices";
 
@@ -80,8 +80,6 @@ const [allRequisition, setallRequisition] = useState([]);
     console.log('.......',id);
 
 
-    
-
 
     useEffect(() => {
         OrderServices.getOrderDetails(id)
@@ -93,7 +91,7 @@ const [allRequisition, setallRequisition] = useState([]);
             .catch((err) => {
                 console.log(err);
             });
-    }, [refreshing]);
+    }, [id]);
 
 
 

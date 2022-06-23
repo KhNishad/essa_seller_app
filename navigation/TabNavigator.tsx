@@ -94,7 +94,7 @@ export function TabNav() {
                header: () => null,
 
                tabBarIcon: ({ focused, color }) =>
-                  <AntDesign name="user" size={25} color={focused ? '#BB2227' : color} />,
+                  <AntDesign name="book" size={25} color={focused ? '#BB2227' : color} />,
             }}
 
          />

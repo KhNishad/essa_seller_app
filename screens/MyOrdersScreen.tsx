@@ -13,7 +13,7 @@ import {
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import moment from 'moment'
 // components
-
+import Header from '../components/Header'
 // img
 import OrderServices from "../services/OrderServices";
 
@@ -38,7 +38,7 @@ export default function TabTwoScreen(props: any) {
   useEffect(() => {
     OrderServices.getAllOrder()
       .then((res) => {
-        console.log('.............====..order', res);
+        // console.log('.............====..order', res);
 
         setallorders(res?.data);
       })
@@ -60,27 +60,7 @@ export default function TabTwoScreen(props: any) {
 
       <SafeAreaView>
 
-        <View style={styles.container1}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <AntDesign
-              onPress={() => navigation.navigate("HomeScreen")}
-              name="left"
-              size={25}
-              color={"black"}
-            ></AntDesign>
-            <Text
-              style={{ fontSize: 18, fontWeight: "bold", marginLeft: 10 }}
-            >
-              My Order
-            </Text>
-            <View></View>
-          </View>
-        </View>
+        <Header/>
         <ScrollView>
           <View style={{ marginBottom: 10 }}>
 
@@ -115,7 +95,7 @@ export default function TabTwoScreen(props: any) {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
                     <TouchableOpacity onPress={() => navigation.navigate('OrderDetails',
-                      { id: item?.id }
+                      { id: item?.orderSellerNo }
                     )}
                       style={{ backgroundColor: '#FF9411', borderTopRightRadius: 5, borderBottomRightRadius: 5, paddingHorizontal: 10 }}>
                       <Text style={{ fontSize: 14, fontWeight: 'bold', padding: 10 }}>Details</Text>

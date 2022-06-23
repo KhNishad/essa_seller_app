@@ -49,6 +49,7 @@ export default function App() {
   const [attributeModal, setattributeModal] = useState(false);
   const [isNegotiable, setisNegotiable] = useState(false)
   const [productDetails, setproductDetails] = useState({})
+  const [images, setimages] = useState([])
 
   // category info
   const [selectedCategoryId, setselectedCategoryId] = useState(null);
@@ -64,7 +65,6 @@ export default function App() {
   const { id } = route.params;
   const navigation = useNavigation(); 
 
-  
  
 
   const createProduct = async (value:any) => {
@@ -72,7 +72,7 @@ export default function App() {
     const data = {
       title: productName,
       description:description,
-      images: Imagee,
+      images: images?.length>0?images:Imagee,
       attachments: [],
       deliveryInfo: {
         estDlvrTimeIn: '',
@@ -85,7 +85,6 @@ export default function App() {
       brandId: selectedBrand,
       attributes: AtributesData,
       activeStatus: value,
-      id:id,
       variations: [
         {
           SKU: sku,
@@ -109,6 +108,10 @@ export default function App() {
         }
       ]
     }
+    if(value == 5){
+      data['id'] = id
+    }
+    
     if(value == 5){
       try {
         let res = await ProductService.productUpdate(id,data)
@@ -207,8 +210,7 @@ export default function App() {
           setselectedCategoryTitle(res?.data?.category?.title)
           setselectedCategoryId(res?.data?.category?.id)
           setparentCategoryId(res?.data?.categories)
-
-          
+          setImagee(res?.data?.images)
         }
         
       } catch (error) {
@@ -425,7 +427,7 @@ export default function App() {
               editable={false}
             />
           </View>
-          <View >
+          {/* <View >
             <Text style={styles.labelText}>SKU</Text>
             <TextInput
               style={styles.input}
@@ -434,8 +436,8 @@ export default function App() {
               value={sku?sku.toString():''}
 
             />
-          </View>
-          <View >
+          </View> */}
+          {/* <View >
             <Text style={styles.labelText}>Quantity</Text>
             <TextInput
               style={styles.input}
@@ -444,7 +446,7 @@ export default function App() {
               value={quantity?quantity.toString():''}
 
             />
-          </View>
+          </View> */}
           {/* <View >
             
             <Text style={styles.labelText}>Delevery Time(In City)</Text>
@@ -529,7 +531,7 @@ export default function App() {
             />
           </View> */}
 
-          <View >
+          {/* <View >
             <Text style={styles.labelText}>Maximum Order Limit</Text>
             <TextInput
               style={styles.input}
@@ -539,7 +541,7 @@ export default function App() {
 
             />
            
-          </View>
+          </View> */}
           <View style={{flexDirection:'row',alignItems:'center',paddingVertical:20}}>
             <Text style={{fontSize:18,fontWeight:'bold',marginRight:10}}>Negotiable</Text>
             {isNegotiable?

@@ -71,9 +71,9 @@ const Table = ({userProducts,setrefreshing,refreshing}:any) => {
                                 <Text style={styles.infoText}>Sale Price:
                                      <Text   style={{fontWeight:'bold'}}>Tk{item?.productVariation[0]?.salePrice}</Text> 
                                 </Text>
-                                <Text style={styles.infoText}>Quantity:
+                                {/* <Text style={styles.infoText}>Quantity:
                                      <Text style={{fontWeight:'bold',fontSize:12}}>02</Text>
-                                </Text>
+                                </Text> */}
                                  <Text style={styles.infoText}>Category:
                                    <Text  style={{fontWeight:'bold'}}>{item?.category?.title}</Text> 
                                 </Text>

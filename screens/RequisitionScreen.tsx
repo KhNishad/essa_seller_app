@@ -13,7 +13,7 @@ import {
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import moment from 'moment'
 // components
-
+import Header from '../components/Header'
 // img
 import Requisition from "../services/RequisitionServices";
 
@@ -60,22 +60,7 @@ export default function TabTwoScreen(props: any) {
 
       <SafeAreaView style={{flex:1}}>
 
-        <View style={styles.container1}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            
-            <Text
-              style={{ fontSize: 18, fontWeight: "bold", marginLeft: 10 }}
-            >
-              My Requisition
-            </Text>
-            <View></View>
-          </View>
-        </View>
+        <Header/>
         <ScrollView>
           <View style={{ marginBottom: 5 }}>
             {/* <View style={styles.deleverd}>
