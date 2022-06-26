@@ -126,7 +126,7 @@ const [allRequisition, setallRequisition] = useState([]);
                     <View style={{ marginBottom: 10 }}>
 
                         <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
-                            <View style={styles.card}>
+                            {/* <View style={styles.card}>
                                 <View style={{ paddingVertical: 10 }}>
                                     <Text style={{ fontSize: 18, paddingHorizontal: 15 }}>Address</Text>
                                     <Text style={{ fontSize: 14, paddingHorizontal: 15 }}>Division : {allRequisition?.dlvrDivision}</Text>
@@ -134,35 +134,42 @@ const [allRequisition, setallRequisition] = useState([]);
                                     <Text style={{ fontSize: 14, paddingHorizontal: 15 }}>City : {allRequisition?.dlvrCity}</Text>
                                     <Text style={{ fontSize: 14, paddingHorizontal: 15 }}>Area : {allRequisition?.dlvrArea}</Text>
                                 </View>
-                            </View>
-                            {allRequisition?.orderSeller?.map((items:any,indexs:number)=>
-                            <View key={indexs}>
+                            </View> */}
+                            
+                            <View >
                                 <View>
                                   <View style={[styles.card,{marginTop:10,paddingHorizontal:10,marginBottom:-2,borderBottomRightRadius:0,borderBottomLeftRadius:0}]}>
-                                   <Text>Seller No : {items?.orderSellerNo}</Text>
-                                   <Text>Total : TK {items?.totalAmont}</Text>
+                                   <Text>Seller No : {allRequisition?.orderSellerNo} </Text>
+                                   <Text>Total Amount: TK{allRequisition?.totalAmont} </Text>
+                                   <Text>Total Quantity: {allRequisition?.quantity} </Text>
+                                   {allRequisition?.discountAmount ?<Text>Discount Amount: TK{allRequisition?.discountAmount} </Text> :null 
+                                   }
+                                   
+                                   <Text>Delevery Charge: {allRequisition?.deliveryCharge} </Text>
+
                                   </View>
                                 </View>
-                                {items?.orderSellerDetails.map((item:any,index:number)=>
-                                <View style={styles.card} key={index}>
+                                {allRequisition?.orderSellerDetails?.map((items:any,indexs:number)=>
+                                <View key={indexs} style={styles.card} >
                                     <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-start',paddingHorizontal:10}}>
                                         <View style={{width:100}}>
-                                            <Image style={styles.img} source={{ uri: `${apiImagepath}/${item?.product?.images[0].url}` }} />
+                                            <Image style={styles.img} source={{ uri: `${apiImagepath}/${items?.product.images[0].url}` }} />
                                         </View>
                                         <View style={{width:deviceWidth-150}}>
-                                            <Text>{item?.product?.title} </Text>
-                                            <Text>TK: {item?.price}</Text>
+                                            <Text>{items?.product?.title}</Text>
+                                            <Text>TK: {items?.price}</Text>
+                                            <Text>Rretail Price : TK{items?.retailPrice}</Text>
                                         </View>
                                     
                                     </View>
                                     <View style={{marginTop:10}}>
-                                    <StepIndicator stepCount={5}  customStyles={customStyles}  currentPosition={items?.orderSellerStatus =='Pending'? 0 : items?.orderSellerStatus == 'ReadyToShip'?1:items?.orderSellerStatus == 'OnTheWay'?2:items?.orderSellerStatus == 'Deivered'?3:4}  labels={labels} />
+                                    <StepIndicator stepCount={5}  customStyles={customStyles}  currentPosition={items?.status =='Pending'? 0 : items?.status == 'ReadyToShip'?1:items?.status == 'OnTheWay'?2:items?.status == 'Deivered'?3:4}  labels={labels} />
                                     </View>
                                 </View>
                                 )}
                             </View>
                            
-                            )}
+                           
                             
                         </View>
                     </View>

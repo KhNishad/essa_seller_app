@@ -6,7 +6,7 @@ async function getAllOrder() {
   }
 
   async function getOrderDetails(id:number) {
-    const data = await request(`/order/seller?orderSellerNo=${id}&withDetails=true`)
+    const data = await request(`/order/seller?id=${id}&withDetails=true`)
     
     return data;
   }

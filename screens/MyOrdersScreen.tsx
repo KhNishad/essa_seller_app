@@ -95,7 +95,7 @@ export default function TabTwoScreen(props: any) {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
                     <TouchableOpacity onPress={() => navigation.navigate('OrderDetails',
-                      { id: item?.orderSellerNo }
+                      { id: item?.id }
                     )}
                       style={{ backgroundColor: '#FF9411', borderTopRightRadius: 5, borderBottomRightRadius: 5, paddingHorizontal: 10 }}>
                       <Text style={{ fontSize: 14, fontWeight: 'bold', padding: 10 }}>Details</Text>
