@@ -22,7 +22,6 @@ export default function ModalScreen({ setModalOpen, ModalOpen, requisitionNo }: 
  const [quantity, setquantity] = useState('')
 
 
-  // console.log('..........',requisitionNo);
 
 
 
@@ -36,7 +35,6 @@ export default function ModalScreen({ setModalOpen, ModalOpen, requisitionNo }: 
         offerQty: Number(quantity),
       }
 
-      console.log('..........',data);
       
       try {
         let res = await RequisitionService.offerProduct(data)
@@ -45,7 +43,6 @@ export default function ModalScreen({ setModalOpen, ModalOpen, requisitionNo }: 
           type: "success",
         });
         setModalOpen(false)
-        // console.log('====================================',res?.data?.token?.accessToken);
 
       } catch (error) {
         setModalOpen(false)
@@ -102,6 +99,9 @@ export default function ModalScreen({ setModalOpen, ModalOpen, requisitionNo }: 
           </View>
 
           <View style={{ flexDirection: 'row', justifyContent: "space-around", width: deviceWidth / 1.5 }}>
+            <TouchableOpacity onPress={() => setModalOpen(false)} style={{ backgroundColor: '#1C6E7A', borderRadius: 10 }}>
+              <Text style={{ color: '#fff', paddingHorizontal: 20, paddingVertical: 10, fontWeight: 'bold' }}>Cancel</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => offerProduct()} style={{ backgroundColor: '#1C6E7A', borderRadius: 10 }}>
               <Text style={{ color: '#fff', paddingHorizontal: 20, paddingVertical: 10, fontWeight: 'bold' }}>Submit</Text>
             </TouchableOpacity>

@@ -62,7 +62,7 @@ const customStyles = {
   
 }
 
-const [allRequisition, setallRequisition] = useState([]);
+const [allRequisition, setallRequisition] = useState<any>([]);
 
     const [refreshing, setrefreshing] = useState(false);
 
@@ -163,7 +163,7 @@ const [allRequisition, setallRequisition] = useState([]);
                                     
                                     </View>
                                     <View style={{marginTop:10}}>
-                                    <StepIndicator stepCount={5}  customStyles={customStyles}  currentPosition={items?.status =='Pending'? 0 : items?.status == 'ReadyToShip'?1:items?.status == 'OnTheWay'?2:items?.status == 'Deivered'?3:4}  labels={labels} />
+                                    <StepIndicator stepCount={5}  customStyles={customStyles}  currentPosition={items?.status =='pending'? 0 : items?.status == 'readyToShip'?1:items?.status == 'onTheWay'?2:items?.status == 'deivered'?3:4}  labels={labels} />
                                     </View>
                                 </View>
                                 )}
