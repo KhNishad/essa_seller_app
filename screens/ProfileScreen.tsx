@@ -69,7 +69,7 @@ const ViewProduct = () => {
       quality: 1,
     });
 
-      console.log('............result',result);
+      // console.log('............result',result);
       
     if (!result.cancelled) {
 
@@ -80,7 +80,7 @@ const ViewProduct = () => {
         name: result.uri.split('/').pop()
        })
        
-      console.log('.................fromdata',formdata);
+      // console.log('.................fromdata',formdata);
       
        ProductService.ImageUpload(formdata).then(res=>{
         if(res.hasOwnProperty("error") && res.error != ""){
@@ -161,7 +161,7 @@ useEffect(() => {
      try {
      let res =  await   AddressService.getSellerProfile()
 
-        console.log('=res=============',res);
+        // console.log('=res=============',res);
      setfullname(res?.data?.name)
      setemail(res?.data?.email)
      setphone(res?.data?.phone)
@@ -244,7 +244,7 @@ const submit = async()=>{
 
   try {
     let res  = await AddressService.updateSellerProfile(sellerId,data)
-    console.log('====================================ress',res);
+    // console.log('====================================ress',res);
     showMessage({
       message: `${res.message}`,
       type: "success",
